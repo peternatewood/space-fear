@@ -1,0 +1,12 @@
+body {
+  background-color: #000;
+  margin: 0;
+  text-align: center;
+}
+
+canvas#main-viewport {
+  background: transparent;
+  height: 540px;
+  margin: 0 auto;
+  width: 960px;
+}
