@@ -39,6 +39,35 @@ Keyboard = function(canvas) {
     }
   }
 
+  document.addEventListener('keydown', function(event) {
+    var index = convertKeyToIndex(event.key.toUpperCase());
+    if (! event.repeat && index !== false) {
+      // Don't prevent default if ctrl or alt are held down, to allow keyboard
+      // shortcuts
+      if (! event.ctrlKey && ! event.altKey) event.preventDefault();
+
+      if (index.length > 1)
+        index.forEach(function(i) {
+          this.keys[i].pressed = true;
+        }, this);
+      else {
+        this.keys[index].pressed = true;
+      }
+    }
+  }.bind(this));
+  document.addEventListener('keyup', function(event) {
+    var index = convertKeyToIndex(event.key.toUpperCase());
+    if (index !== false) {
+      if (index.length > 1)
+        index.forEach(function(i) {
+          this.keys[i].pressed = false;
+        }, this);
+      else {
+        this.keys[index].pressed = false;
+      }
+    }
+  }.bind(this));
+
   return this;
 }
 Keyboard.prototype.render = function() {
