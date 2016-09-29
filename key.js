@@ -45,8 +45,7 @@ Key.prototype.render = function(context) {
   context.fillStyle = KEY_COLOR;
   context.fillRect(this.x + KEY_LINE_WIDTH, this.y + KEY_LINE_WIDTH, this.w, this.h);
 
-  var keyLetter = this.key.length > 0 ? this.key : this.key.toUpperCase();
   context.fillStyle = KEY_TEXT_COLOR;
   context.font = KEY_TEXT_SIZE + "px " + KEY_FONT;
-  context.fillText(keyLetter, this.x + (MIN_KEY_SIZE / 4), this.y + (MIN_KEY_SIZE / 2) + (KEY_TEXT_SIZE / 2));
+  context.fillText(this.key, this.x + (MIN_KEY_SIZE / 4), this.y + (MIN_KEY_SIZE / 2) + (KEY_TEXT_SIZE / 2));
 };
