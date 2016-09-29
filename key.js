@@ -4,14 +4,15 @@ Key = function(key, x, y, w, h) {
   this.y = y;
   this.w = w ? w : MIN_KEY_SIZE;
   this.h = h ? h : MIN_KEY_SIZE;
+  this.pressed = false;
 
   var getKeyWidth = function(chars) {
     add = 0;
 
-    switch(chars.split("\n")[0]) {
+    switch(chars) {
       case 'Backspace': add = 72; break;
       case 'Tab': add = 26; break;
-      case '|': add = 46; break;
+      case '|\\': add = 46; break;
       case 'CapsLk': add = 46; break;
       case 'Enter': add = 64; break;
       case 'Shift': add = 74; break;
@@ -29,10 +30,10 @@ Key = function(key, x, y, w, h) {
   return this;
 }
 Key.prototype.render = function(context) {
-  context.fillStyle = KEY_DARK_BORDER_COLOR;
+  context.fillStyle = this.pressed ? KEY_LIGHT_BORDER_COLOR : KEY_DARK_BORDER_COLOR;
   context.fillRect(this.x, this.y, this.w + (2 * KEY_LINE_WIDTH), this.h + (2 * KEY_LINE_WIDTH));
 
-  context.fillStyle = KEY_LIGHT_BORDER_COLOR;
+  context.fillStyle = this.pressed ? KEY_DARK_BORDER_COLOR : KEY_LIGHT_BORDER_COLOR;
   context.beginPath();
   context.moveTo(this.x, this.y);
   context.lineTo(this.x + this.w + (2 * KEY_LINE_WIDTH), this.y);
