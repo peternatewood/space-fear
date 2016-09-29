@@ -1,10 +1,11 @@
-var KEY_LINE_WIDTH = 6;
-var KEY_MARGIN = 8;
-var MIN_KEY_SIZE = 32;
-var KEY_TEXT_SIZE = 18;
+var KEY_LINE_WIDTH = 4;
+var KEY_MARGIN = 2;
+var MIN_KEY_SIZE = 28;
+var KEY_TEXT_SIZE = 16;
 
-var KEYBOARD_HEIGHT = 280;
-var KEYBOARD_WIDTH = 820;
+var KEYBOARD_HEIGHT = 216;
+var KEYBOARD_WIDTH = 630;
+var KEYBOARD_EDGE_WIDTH = 12;
 
 var KEY_COLOR = "#CC9"
 var KEY_TEXT_COLOR = "#111";
@@ -18,7 +19,7 @@ var KEYBOARD_KEYS = [
   ['Tab', 'q', 'w', 'e', 'r', 't', 'y', "u", "i", "o", "p", '[', ']', "|\n\\"],
   ['CapsLk', 'a', 's', 'd', 'f', 'g', 'h', "j", "k", "l", ';', "'", 'Enter'],
   ['Shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 'Shift'],
-  ['Ctrl', 'Meta', 'Alt', 'Space', 'Alt', 'Ctrl'],
+  ['Ctrl', 'Meta', 'Alt', ' ', 'Alt', 'Ctrl'],
 ];
 var CURSOR_KEYS = ['↑', '←', '↓', '→'];
 

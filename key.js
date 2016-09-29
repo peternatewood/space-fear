@@ -12,13 +12,13 @@ Key = function(key, x, y, w, h) {
       case 'Backspace': add = 72; break;
       case 'Tab': add = 26; break;
       case '|': add = 46; break;
-      case 'CapsLk': add = 48; break;
-      case 'Enter': add = 76; break;
-      case 'Shift': add = 88; break;
-      case 'Ctrl': add = 24; break;
-      case 'Meta': add = 24; break;
-      case 'Alt': add = 24; break;
-      case 'Space': add = 212; break;
+      case 'CapsLk': add = 46; break;
+      case 'Enter': add = 64; break;
+      case 'Shift': add = 74; break;
+      case 'Ctrl': add = 18; break;
+      case 'Meta': add = 18; break;
+      case 'Alt': add = 18; break;
+      case ' ': add = 172; break;
       default: break;
     }
 

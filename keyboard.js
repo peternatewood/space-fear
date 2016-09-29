@@ -9,12 +9,12 @@ Keyboard = function(canvas) {
 
   this.keys = [];
 
-  var x = this.x + KEY_MARGIN + KEY_LINE_WIDTH;
-  var y = this.y + KEY_MARGIN + KEY_LINE_WIDTH;
+  var x = this.x + KEY_MARGIN + KEYBOARD_EDGE_WIDTH;
+  var y = this.y + KEY_MARGIN + KEYBOARD_EDGE_WIDTH;
   var keyWidth;
 
   KEYBOARD_KEYS.forEach(function(row, index) {
-    x = this.x + KEY_MARGIN + KEY_LINE_WIDTH;
+    x = this.x + KEY_MARGIN + KEYBOARD_EDGE_WIDTH;
     row.forEach(function(key) {
       this.keys.push(new Key(key, x, y));
 
@@ -42,6 +42,8 @@ Keyboard = function(canvas) {
   return this;
 }
 Keyboard.prototype.render = function() {
+  var edge = KEYBOARD_EDGE_WIDTH;
+
   this.context.fillStyle = KEY_DARK_BORDER_COLOR;
   this.context.fillRect(this.x, this.y, this.w, this.h);
 
@@ -49,13 +51,13 @@ Keyboard.prototype.render = function() {
   this.context.beginPath();
   this.context.moveTo(this.x, this.y);
   this.context.lineTo(this.x + this.w, this.y);
-  this.context.lineTo(this.x + this.w - KEY_MARGIN, this.y + KEY_MARGIN);
-  this.context.lineTo(this.x + KEY_MARGIN, this.y + this.h - KEY_MARGIN);
+  this.context.lineTo(this.x + this.w - edge, this.y + edge);
+  this.context.lineTo(this.x + edge, this.y + this.h - edge);
   this.context.lineTo(this.x, this.y + this.h);
   this.context.closePath();
   this.context.fill();
 
-  this.context.clearRect(this.x + KEY_MARGIN, this.y + KEY_MARGIN, this.w - (2 * KEY_MARGIN), this.h - (2 * KEY_MARGIN));
+  this.context.clearRect(this.x + edge, this.y + edge, this.w - (2 * edge), this.h - (2 * edge));
 
   this.keys.forEach(function(key) {
     key.render(this.context);
