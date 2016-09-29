@@ -88,6 +88,11 @@ Keyboard.prototype.render = function() {
 
   this.context.clearRect(this.x + edge, this.y + edge, this.w - (2 * edge), this.h - (2 * edge));
 
+  this.context.fillStyle = KEY_TEXT_COLOR;
+  this.context.strokeStyle = KEY_TEXT_COLOR;
+  this.context.lineWidth = 0.5;
+  this.context.font = KEY_TEXT_SIZE + "px " + KEY_FONT;
+
   this.keys.forEach(function(key) {
     key.render(this.context);
   }, this);

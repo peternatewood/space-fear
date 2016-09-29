@@ -47,13 +47,14 @@ Key.prototype.render = function(context) {
   context.fillRect(this.x + KEY_LINE_WIDTH, this.y + KEY_LINE_WIDTH, this.w, this.h);
 
   context.fillStyle = KEY_TEXT_COLOR;
-  context.font = KEY_TEXT_SIZE + "px " + KEY_FONT;
   if (this.key.length == 2) {
     this.key.split('').forEach(function(char, index) {
       context.fillText(char, this.x + (MIN_KEY_SIZE / 4), this.y + (MIN_KEY_SIZE / 2) + (index * KEY_TEXT_SIZE));
+      context.strokeText(char, this.x + (MIN_KEY_SIZE / 4), this.y + (MIN_KEY_SIZE / 2) + (index * KEY_TEXT_SIZE));
     }, this);
   }
   else {
     context.fillText(this.key, this.x + (MIN_KEY_SIZE / 4), this.y + (MIN_KEY_SIZE / 2) + (KEY_TEXT_SIZE / 3));
+    context.strokeText(this.key, this.x + (MIN_KEY_SIZE / 4), this.y + (MIN_KEY_SIZE / 2) + (KEY_TEXT_SIZE / 3));
   }
 };
