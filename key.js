@@ -47,5 +47,12 @@ Key.prototype.render = function(context) {
 
   context.fillStyle = KEY_TEXT_COLOR;
   context.font = KEY_TEXT_SIZE + "px " + KEY_FONT;
-  context.fillText(this.key, this.x + (MIN_KEY_SIZE / 4), this.y + (MIN_KEY_SIZE / 2) + (KEY_TEXT_SIZE / 2));
+  if (this.key.length == 2) {
+    this.key.split('').forEach(function(char, index) {
+      context.fillText(char, this.x + (MIN_KEY_SIZE / 4), this.y + (MIN_KEY_SIZE / 2) + (index * KEY_TEXT_SIZE));
+    }, this);
+  }
+  else {
+    context.fillText(this.key, this.x + (MIN_KEY_SIZE / 4), this.y + (MIN_KEY_SIZE / 2) + (KEY_TEXT_SIZE / 3));
+  }
 };
