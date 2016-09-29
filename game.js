@@ -3,7 +3,7 @@ var ready = function(fun) {
     fun();
   }
   else if (document.addEventListener) {
-    document.addEventListener('DOMContentLoaded', fn);
+    document.addEventListener('DOMContentLoaded', fun);
   }
   else {
     document.attachEvent('onreadystatechange', function() {
@@ -13,3 +13,11 @@ var ready = function(fun) {
     });
   }
 }
+
+ready(function() {
+  var canvas = document.getElementById('main-viewport');
+  var context = canvas.getContext('2d');
+
+  window.keyboard = new Keyboard(canvas);
+  keyboard.render();
+});
