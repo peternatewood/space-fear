@@ -7,6 +7,9 @@ var MONITOR_WIDTH = 480;
 var MONITOR_COLOR = '#553';
 var MONITOR_MEDIUM_COLOR = '#332';
 var MONITOR_DARK_COLOR = '#26261A';
+var MONITOR_TEXT_COLOR = 'white';
+
+var CURSOR_BLINK_DELAY = 680;
 
 var KEY_LINE_WIDTH = 4;
 var KEY_MARGIN = 2;
@@ -25,7 +28,7 @@ var KEY_DARK_BORDER_COLOR = "#663";
 var KEY_FONT = "Courier";
 
 // Declare all classes here
-var Key, Keyboard, Monitor;
+var Key, Keyboard, Monitor, Terminal;
 
 var KEYBOARD_KEYS = [
   ['~`', '!1', '@2', '#3', '$4', '%5', '^6', '&7', '*8', '(9', ')0', '_-', '+=', 'Backspace'],
