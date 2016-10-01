@@ -5,6 +5,7 @@ Terminal = function() {
   this.bufferLog = [];
   this.logOffset = 0;
   this.blinkInterval = 0;
+  this.message = [];
 
   this.restartCursorBlink();
 
@@ -62,11 +63,32 @@ Terminal.prototype.clearBuffer = function() {
 };
 Terminal.prototype.readBuffer = function() {
   this.bufferLog.unshift(this.buffer);
-  // Process the buffer
+  this.processCommands();
   this.clearBuffer();
 };
 Terminal.prototype.restartCursorBlink = function() {
   this.showCursor = true;
   clearInterval(this.blinkInterval);
   this.blinkInterval = setInterval(function() {this.showCursor = ! this.showCursor}.bind(this), CURSOR_BLINK_DELAY);
+};
+Terminal.prototype.processCommands = function() {
+  var commands = this.bufferLog[0].split(' ');
+
+  switch(commands[0]) {
+    case 'history':
+      if (! isNaN(commands[1])) {
+        for (var i = commands[1]; i >= 0; i--) {
+          if (this.bufferLog[i]) {
+            this.message.push(this.bufferLog[i]);
+          }
+        }
+      }
+      else {
+        this.message.push('Please enter a number: E.G. history 2');
+      }
+      break;
+    default:
+      this.message.push(DEFAULT_MESSAGE);
+      break;
+  }
 };
