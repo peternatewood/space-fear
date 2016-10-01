@@ -1,5 +1,12 @@
-var CONSOLE_MARGIN = 24;
-var CONSOLE_PADDING = 24;
+var MONITOR_TOP = 24;
+var MONITOR_MARGIN = 24;
+var MONITOR_PADDING = 24;
+var MONITOR_HEIGHT = 320;
+var MONITOR_WIDTH = 480;
+
+var MONITOR_COLOR = '#553';
+var MONITOR_MEDIUM_COLOR = '#332';
+var MONITOR_DARK_COLOR = '#26261A';
 
 var KEY_LINE_WIDTH = 4;
 var KEY_MARGIN = 2;
@@ -18,7 +25,7 @@ var KEY_DARK_BORDER_COLOR = "#663";
 var KEY_FONT = "Courier";
 
 // Declare all classes here
-var Monitor, Key, Keyboard;
+var Key, Keyboard, Monitor;
 
 var KEYBOARD_KEYS = [
   ['~`', '!1', '@2', '#3', '$4', '%5', '^6', '&7', '*8', '(9', ')0', '_-', '+=', 'Backspace'],
