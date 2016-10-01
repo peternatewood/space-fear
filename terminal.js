@@ -90,6 +90,17 @@ Terminal.prototype.processCommands = function() {
   var commands = this.bufferLog[0].split(' ');
 
   switch(commands[0].toLowerCase()) {
+    case 'clear':
+      this.message = [];
+      break;
+    case 'color':
+      var message = 'Valid options include: default, crimson, lime, slateblue';
+      if (VALID_COLORS.includes(commands[1])) {
+        this.color = commands[1] == 'default' ? DEFAULT_TERMINAL_COLOR : commands[1];
+        message = 'Color: ' + commands[1];
+      }
+      this.pushMessage(message);
+      break;
     case 'help':
       if (commands[1] && VALID_COMMANDS[commands[1].toLowerCase()]) {
         this.pushMessage(commands[1].toLowerCase() + ': ' + VALID_COMMANDS[commands[1].toLowerCase()]);
@@ -115,14 +126,6 @@ Terminal.prototype.processCommands = function() {
       else {
         this.pushMessage('Please enter a number: E.G. history 2');
       }
-      break;
-    case 'color':
-      var message = 'Valid options include: default, crimson, lime, slateblue';
-      if (VALID_COLORS.includes(commands[1])) {
-        this.color = commands[1] == 'default' ? DEFAULT_TERMINAL_COLOR : commands[1];
-        message = 'Color: ' + commands[1];
-      }
-      this.pushMessage(message);
       break;
     default:
       this.pushMessage(DEFAULT_MESSAGE);

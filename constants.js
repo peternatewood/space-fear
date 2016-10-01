@@ -15,6 +15,7 @@ var TERMINAL_MESSAGE_CHARS = 49;
 
 var DEFAULT_MESSAGE = "I don't understand. Type help for a list of commands";
 var VALID_COMMANDS = {
+  clear: 'Clear terminal messages from the monitor.',
   color: 'Change the color of the terminal text.',
   help: 'List all valid commands. Name a command for detailed help.',
   history: 'List a number of previously entered commands.',
