@@ -11,6 +11,7 @@ var MONITOR_TEXT_COLOR = 'white';
 
 var DEFAULT_MESSAGE = "I don't understand. Type help for a list of commands";
 var CURSOR_BLINK_DELAY = 680;
+var TERMINAL_MESSAGE_ROWS = 17;
 
 var KEY_LINE_WIDTH = 4;
 var KEY_MARGIN = 2;

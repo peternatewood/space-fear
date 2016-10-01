@@ -48,7 +48,7 @@ Monitor.prototype.render = function() {
   }
 
   if (this.terminal.message.length > 0) {
-    for (var i = 0; i < this.terminal.message.length; i++) {
+    for (var i = 0; i < this.terminal.message.length && i < TERMINAL_MESSAGE_ROWS; i++) {
       this.context.fillText(this.terminal.message[this.terminal.message.length - i - 1], this.x + MONITOR_MARGIN + MONITOR_PADDING, this.y + this.h - (MONITOR_MARGIN + MONITOR_PADDING) - ((i + 1) * KEY_TEXT_SIZE));
     }
   }
