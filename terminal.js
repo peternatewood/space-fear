@@ -75,7 +75,7 @@ Terminal.prototype.restartCursorBlink = function() {
 Terminal.prototype.processCommands = function() {
   var commands = this.bufferLog[0].split(' ');
 
-  switch(commands[0]) {
+  switch(commands[0].toLowerCase()) {
     case 'help':
       if (commands[1] && VALID_COMMANDS[commands[1].toLowerCase()]) {
         this.message.push(commands[1].toLowerCase() + ': ' + VALID_COMMANDS[commands[1].toLowerCase()]);
@@ -103,8 +103,8 @@ Terminal.prototype.processCommands = function() {
       }
       break;
     case 'color':
-      var message = 'Valid options include: default, red, green, blue';
-      if (/[a-zA-Z]+/.test(commands[1])) {
+      var message = 'Valid options include: default, crimson, lime, slateblue';
+      if (VALID_COLORS.includes(commands[1])) {
         this.color = commands[1] == 'default' || commands[1] == 'black' ? DEFAULT_TERMINAL_COLOR : commands[1];
         message = 'Color: ' + commands[1];
       }
