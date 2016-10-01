@@ -75,9 +75,12 @@ Terminal.prototype.processCommands = function() {
   var commands = this.bufferLog[0].split(' ');
 
   switch(commands[0]) {
+    case 'help':
+      this.message = this.message.concat(VALID_COMMANDS);
+      break;
     case 'history':
       if (! isNaN(commands[1])) {
-        for (var i = commands[1]; i >= 0; i--) {
+        for (var i = commands[1] < TERMINAL_MESSAGE_ROWS ? commands[1] : TERMINAL_MESSAGE_ROWS; i >= 0; i--) {
           if (this.bufferLog[i]) {
             this.message.push(this.bufferLog[i]);
           }
