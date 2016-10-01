@@ -48,8 +48,27 @@ Monitor.prototype.render = function() {
   }
 
   if (this.terminal.message.length > 0) {
-    for (var i = 0; i < this.terminal.message.length && i < TERMINAL_MESSAGE_ROWS; i++) {
-      this.context.fillText(this.terminal.message[this.terminal.message.length - i - 1], this.x + MONITOR_MARGIN + MONITOR_PADDING, this.y + this.h - (MONITOR_MARGIN + MONITOR_PADDING) - ((i + 1) * KEY_TEXT_SIZE));
+    var message;
+    for (var index = 0, row = 0; index < this.terminal.message.length && row < TERMINAL_MESSAGE_ROWS; index++) {
+      message = [this.terminal.message[this.terminal.message.length - index - 1]];
+
+      if (message[0].length > TERMINAL_MESSAGE_CHARS) {
+        var words = message[0].split(' ');
+        message = [words[0]];
+        for (var i = 1, j = 0; i < words.length; i++) {
+          if ((message[j] + ' ' + words[i]).length > TERMINAL_MESSAGE_CHARS) {
+            message[++j] = words[i];
+          }
+          else {
+            message[j] += ' ' + words[i];
+          }
+        }
+      }
+
+      for (var i = 0; i < message.length; i++) {
+        this.context.fillText(message[message.length - 1 - i], this.x + MONITOR_MARGIN + MONITOR_PADDING, this.y + this.h - (MONITOR_MARGIN + MONITOR_PADDING) - ((row + 1) * KEY_TEXT_SIZE));
+        row++;
+      }
     }
   }
 };
