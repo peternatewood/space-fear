@@ -72,13 +72,27 @@ Terminal.prototype.restartCursorBlink = function() {
   clearInterval(this.blinkInterval);
   this.blinkInterval = setInterval(function() {this.showCursor = ! this.showCursor}.bind(this), CURSOR_BLINK_DELAY);
 };
+Terminal.prototype.pushMessage = function(message) {
+  var isArray = message instanceof Array;
+
+  if (this.message.length == TERMINAL_MESSAGE_ROWS) {
+    this.message = this.message.slice(isArray ? message.length : 1);
+  }
+
+  if (isArray) {
+    message.forEach(function(msg) {this.message.push(msg)}, this);
+  }
+  else {
+    this.message.push(message);
+  }
+};
 Terminal.prototype.processCommands = function() {
   var commands = this.bufferLog[0].split(' ');
 
   switch(commands[0].toLowerCase()) {
     case 'help':
       if (commands[1] && VALID_COMMANDS[commands[1].toLowerCase()]) {
-        this.message.push(commands[1].toLowerCase() + ': ' + VALID_COMMANDS[commands[1].toLowerCase()]);
+        this.pushMessage(commands[1].toLowerCase() + ': ' + VALID_COMMANDS[commands[1].toLowerCase()]);
       }
       else {
         var commands = [];
@@ -87,31 +101,31 @@ Terminal.prototype.processCommands = function() {
             commands.push(prop);
           }
         }
-        this.message = this.message.concat(commands);
+        this.pushMessage(commands);
       }
       break;
     case 'history':
       if (! isNaN(commands[1])) {
         for (var i = commands[1] < TERMINAL_MESSAGE_ROWS ? commands[1] : TERMINAL_MESSAGE_ROWS; i >= 0; i--) {
           if (this.bufferLog[i]) {
-            this.message.push(this.bufferLog[i]);
+            this.pushMessage(this.bufferLog[i]);
           }
         }
       }
       else {
-        this.message.push('Please enter a number: E.G. history 2');
+        this.pushMessage('Please enter a number: E.G. history 2');
       }
       break;
     case 'color':
       var message = 'Valid options include: default, crimson, lime, slateblue';
       if (VALID_COLORS.includes(commands[1])) {
-        this.color = commands[1] == 'default' || commands[1] == 'black' ? DEFAULT_TERMINAL_COLOR : commands[1];
+        this.color = commands[1] == 'default' ? DEFAULT_TERMINAL_COLOR : commands[1];
         message = 'Color: ' + commands[1];
       }
-      this.message.push(message);
+      this.pushMessage(message);
       break;
     default:
-      this.message.push(DEFAULT_MESSAGE);
+      this.pushMessage(DEFAULT_MESSAGE);
       break;
   }
 };
