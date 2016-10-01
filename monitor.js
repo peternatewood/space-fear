@@ -46,4 +46,10 @@ Monitor.prototype.render = function() {
     }
     this.context.fillText(cursor, this.x + MONITOR_MARGIN + MONITOR_PADDING, this.y + this.h - (MONITOR_MARGIN + MONITOR_PADDING));
   }
+
+  if (this.terminal.message.length > 0) {
+    for (var i = 0; i < this.terminal.message.length; i++) {
+      this.context.fillText(this.terminal.message[this.terminal.message.length - i - 1], this.x + MONITOR_MARGIN + MONITOR_PADDING, this.y + this.h - (MONITOR_MARGIN + MONITOR_PADDING) - ((i + 1) * KEY_TEXT_SIZE));
+    }
+  }
 };
