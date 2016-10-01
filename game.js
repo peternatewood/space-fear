@@ -53,8 +53,11 @@ ready(function() {
   var step = function(timestamp) {
     if (! start) var start = timestamp;
     var progress = timestamp - start;
+
+    context.clearRect(0, 0, canvas.width, canvas.height);
     keyboard.render();
     monitor.render();
+
     if (progress < 2000) {
       window.requestAnimationFrame(step);
     }
