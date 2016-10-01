@@ -1,3 +1,6 @@
+var CONSOLE_MARGIN = 24;
+var CONSOLE_PADDING = 24;
+
 var KEY_LINE_WIDTH = 4;
 var KEY_MARGIN = 2;
 var MIN_KEY_SIZE = 28;
@@ -15,7 +18,7 @@ var KEY_DARK_BORDER_COLOR = "#663";
 var KEY_FONT = "Courier";
 
 // Declare all classes here
-var Key, Keyboard;
+var Monitor, Key, Keyboard;
 
 var KEYBOARD_KEYS = [
   ['~`', '!1', '@2', '#3', '$4', '%5', '^6', '&7', '*8', '(9', ')0', '_-', '+=', 'Backspace'],
