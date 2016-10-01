@@ -65,7 +65,7 @@ Monitor.prototype.render = function() {
         }
       }
 
-      for (var i = 0; i < message.length; i++) {
+      for (var i = 0; i < message.length && row < TERMINAL_MESSAGE_ROWS; i++) {
         this.context.fillText(message[message.length - 1 - i], this.x + MONITOR_MARGIN + MONITOR_PADDING, this.y + this.h - (MONITOR_MARGIN + MONITOR_PADDING) - ((row + 1) * KEY_TEXT_SIZE) - 2);
         row++;
       }
