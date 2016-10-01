@@ -19,6 +19,7 @@ ready(function() {
   var context = canvas.getContext('2d');
 
   var keyboard = new Keyboard(canvas);
+  var monitor = new Monitor(canvas);
 
   document.addEventListener('keydown', function(event) {
     var index = convertKeyToIndex(event.key.toUpperCase());
@@ -53,6 +54,7 @@ ready(function() {
     if (! start) var start = timestamp;
     var progress = timestamp - start;
     keyboard.render();
+    monitor.render();
     if (progress < 2000) {
       window.requestAnimationFrame(step);
     }
