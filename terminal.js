@@ -6,6 +6,7 @@ Terminal = function() {
   this.logOffset = 0;
   this.blinkInterval = 0;
   this.message = [];
+  this.color = DEFAULT_TERMINAL_COLOR;
 
   this.restartCursorBlink();
 
@@ -89,6 +90,14 @@ Terminal.prototype.processCommands = function() {
       else {
         this.message.push('Please enter a number: E.G. history 2');
       }
+      break;
+    case 'color':
+      var message = 'Valid options include: default, red, green, blue';
+      if (/[a-zA-Z]+/.test(commands[1])) {
+        this.color = commands[1] == 'default' || commands[1] == 'black' ? DEFAULT_TERMINAL_COLOR : commands[1];
+        message = 'Color: ' + commands[1];
+      }
+      this.message.push(message);
       break;
     default:
       this.message.push(DEFAULT_MESSAGE);

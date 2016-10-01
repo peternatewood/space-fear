@@ -36,7 +36,7 @@ Monitor.prototype.render = function() {
 
   this.context.clearRect(this.x + MONITOR_MARGIN, this.y + MONITOR_MARGIN, this.w - (2 * MONITOR_MARGIN), this.h - (2 * MONITOR_MARGIN));
 
-  this.context.fillStyle = MONITOR_TEXT_COLOR;
+  this.context.fillStyle = this.terminal.color;
   this.context.fillText('> ' + this.terminal.buffer, this.x + MONITOR_MARGIN + MONITOR_PADDING, this.y + this.h - (MONITOR_MARGIN + MONITOR_PADDING));
 
   if (this.terminal.showCursor) {
