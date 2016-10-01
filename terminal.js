@@ -12,7 +12,7 @@ Terminal = function() {
   document.addEventListener('keydown', function(event) {
     this.restartCursorBlink();
     // Only allow printable characters
-    if (/^.$/.test(event.key)) {
+    if (/^.$/.test(event.key) && this.cursor < TERMINAL_MESSAGE_CHARS) {
       this.buffer += event.key;
       this.cursor += 1;
     }
