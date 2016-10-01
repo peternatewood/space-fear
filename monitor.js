@@ -5,18 +5,33 @@ Monitor = function(canvas) {
   return this;
 }
 Monitor.prototype.render = function() {
-  var x = CONSOLE_MARGIN;
-  var y = CONSOLE_MARGIN;
-  var w = this.canvas.width - (2 * CONSOLE_MARGIN);
-  var h = (w * 4) / 3;
+  var x = (this.canvas.width / 2) - (MONITOR_WIDTH / 2);
+  var y = MONITOR_TOP;
+  var w = MONITOR_WIDTH;
+  var h = MONITOR_HEIGHT;
 
-  this.context.fillStyle = KEY_COLOR;
+  this.context.fillStyle = MONITOR_COLOR;
   this.context.fillRect(x, y, w, h);
-  this.context.clearRect(x + CONSOLE_PADDING, y + CONSOLE_PADDING, w - (2 * CONSOLE_PADDING), h - (2 * CONSOLE_PADDING));
 
-  // this.context.beginPath();
-  // this.context.moveTo(CONSOLE_MARGIN, CONSOLE_MARGIN);
-  // this.context.lineTo();
-  // this.context.closePath();
-  // this.context.fill();
+  this.context.fillStyle = MONITOR_MEDIUM_COLOR;
+  this.context.beginPath();
+  this.context.moveTo(x, y);
+  this.context.lineTo(x + w, y);
+  this.context.lineTo(x + w - (2 * MONITOR_MARGIN), y + (2 * MONITOR_MARGIN));
+  this.context.lineTo(x + (2 * MONITOR_MARGIN), y + h - (2 * MONITOR_MARGIN));
+  this.context.lineTo(x, y + h);
+  this.context.closePath();
+  this.context.fill();
+
+  this.context.fillStyle = MONITOR_DARK_COLOR;
+  this.context.beginPath();
+  this.context.moveTo(x, y);
+  this.context.lineTo(x + w, y);
+  this.context.lineTo(x + w - (2 * MONITOR_MARGIN), y + (2 * MONITOR_MARGIN));
+  this.context.lineTo(x + (2 * MONITOR_MARGIN), y + (2 * MONITOR_MARGIN));
+  // this.context.lineTo(x, y);
+  this.context.closePath();
+  this.context.fill();
+
+  this.context.clearRect(x + MONITOR_MARGIN, y + MONITOR_MARGIN, w - (2 * MONITOR_MARGIN), h - (2 * MONITOR_MARGIN));
 };
