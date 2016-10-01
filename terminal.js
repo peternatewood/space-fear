@@ -77,7 +77,18 @@ Terminal.prototype.processCommands = function() {
 
   switch(commands[0]) {
     case 'help':
-      this.message = this.message.concat(VALID_COMMANDS);
+      if (commands[1] && VALID_COMMANDS[commands[1].toLowerCase()]) {
+        this.message.push(commands[1].toLowerCase() + ': ' + VALID_COMMANDS[commands[1].toLowerCase()]);
+      }
+      else {
+        var commands = [];
+        for (var prop in VALID_COMMANDS) {
+          if (VALID_COMMANDS.hasOwnProperty(prop)) {
+            commands.push(prop);
+          }
+        }
+        this.message = this.message.concat(commands);
+      }
       break;
     case 'history':
       if (! isNaN(commands[1])) {

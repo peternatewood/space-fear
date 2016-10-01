@@ -14,10 +14,11 @@ var TERMINAL_MESSAGE_ROWS = 17;
 var TERMINAL_MESSAGE_CHARS = 49;
 
 var DEFAULT_MESSAGE = "I don't understand. Type help for a list of commands";
-var VALID_COMMANDS = [
-  'help',
-  'history',
-];
+var VALID_COMMANDS = {
+  color: 'Change the color of the terminal text.',
+  help: 'List all valid commands. Name a command for detailed help.',
+  history: 'List a number of previously entered commands.',
+}
 
 var KEY_LINE_WIDTH = 4;
 var KEY_MARGIN = 2;
