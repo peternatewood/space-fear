@@ -1,6 +1,6 @@
 var MONITOR_TOP = 24;
 var MONITOR_MARGIN = 24;
-var MONITOR_PADDING = 24;
+var MONITOR_PADDING = 12;
 var MONITOR_HEIGHT = 320;
 var MONITOR_WIDTH = 480;
 
@@ -9,6 +9,7 @@ var MONITOR_MEDIUM_COLOR = '#332';
 var MONITOR_DARK_COLOR = '#26261A';
 var MONITOR_TEXT_COLOR = 'white';
 
+var DEFAULT_MESSAGE = "I don't understand. Type help for a list of commands";
 var CURSOR_BLINK_DELAY = 680;
 
 var KEY_LINE_WIDTH = 4;
