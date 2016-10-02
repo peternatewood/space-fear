@@ -65,8 +65,8 @@ Monitor.prototype.render = function() {
         }
       }
 
-      for (var i = 0; i < message.length && row < TERMINAL_MESSAGE_ROWS; i++) {
-        this.context.fillText(message[message.length - 1 - i], this.x + MONITOR_MARGIN + MONITOR_PADDING, this.y + this.h - (MONITOR_MARGIN + MONITOR_PADDING) - ((row + 1) * KEY_TEXT_SIZE) - 2);
+      for (var i = message.length - 1; i >= 0 && row < TERMINAL_MESSAGE_ROWS; i--) {
+        this.context.fillText(message[message.length - 1 - i], this.x + MONITOR_MARGIN + MONITOR_PADDING, this.y + this.h - (MONITOR_MARGIN + MONITOR_PADDING) - ((TERMINAL_MESSAGE_ROWS - row) * KEY_TEXT_SIZE) - 2);
         row++;
       }
     }
