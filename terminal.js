@@ -7,6 +7,9 @@ Terminal = function() {
   this.logOffset = 0;
   this.blinkInterval = 0;
   this.message = [];
+  this.messageLog = [];
+  this.messageEnd = 0;
+  this.messageInterval = false;
   this.color = DEFAULT_TERMINAL_COLOR;
 
   this.restartCursorBlink();
@@ -32,8 +35,12 @@ Terminal = function() {
 
         this.buffer = before + after;
       }
-      else if (event.key == 'Enter' && this.buffer) {
-        this.readBuffer();
+      else if (event.key == 'Enter') {
+        if (this.messageInterval) {
+          this.skipMessage();
+        }
+
+        if (this.buffer) this.readBuffer();
       }
       else if (event.key == 'ArrowLeft' && this.cursor > 0) {
         this.cursor -= 1;
@@ -78,6 +85,20 @@ Terminal.prototype.readBuffer = function() {
   this.processCommands();
   this.clearBuffer();
 };
+Terminal.prototype.startMessage = function() {
+  this.messageEnd = 0;
+
+  this.messageInterval = setInterval(function() {
+    this.messageEnd++;
+    if (this.messageEnd > this.message[0].length) {
+      this.skipMessage();
+    }
+  }.bind(this), MESSAGE_DELAY);
+};
+Terminal.prototype.skipMessage = function() {
+  clearInterval(this.messageInterval);
+  this.messageInterval = false;
+};
 Terminal.prototype.disableCursor = function() {
   this.showCursor = false;
   clearInterval(this.blinkInterval);
@@ -87,19 +108,32 @@ Terminal.prototype.restartCursorBlink = function() {
   clearInterval(this.blinkInterval);
   this.blinkInterval = setInterval(function() {this.showCursor = ! this.showCursor}.bind(this), CURSOR_BLINK_DELAY);
 };
-Terminal.prototype.pushMessage = function(message) {
-  var isArray = message instanceof Array;
-
-  if (this.message.length == TERMINAL_MESSAGE_ROWS) {
-    this.message = this.message.slice(isArray ? message.length : 1);
+Terminal.prototype.pushMessage = function(rawMessage) {
+  var message = rawMessage;
+  if (message instanceof Array) {
+    message = rawMessage.join("\n");
+  }
+  else if (rawMessage.length > TERMINAL_MESSAGE_CHARS) {
+    var words = rawMessage.split(' ');
+    rawMessage = [words[0]];
+    for (var i = 1, j = 0; i < words.length; i++) {
+      if ((rawMessage[j] + ' ' + words[i]).length > TERMINAL_MESSAGE_CHARS) {
+        rawMessage[++j] = words[i];
+      }
+      else {
+        rawMessage[j] += ' ' + words[i];
+      }
+    }
+    message = rawMessage.join("\n");
   }
 
-  if (isArray) {
-    message.forEach(function(msg) {this.message.push(msg)}, this);
+  if (this.message.length > TERMINAL_MESSAGE_ROWS) {
+    this.message = this.message.slice(1);
   }
-  else {
-    this.message.push(message);
-  }
+
+  this.message.push(message);
+  this.messageLog.push(message);
+  this.startMessage();
 };
 Terminal.prototype.processCommands = function() {
   var commands = this.bufferLog[0].split(' ');
@@ -132,11 +166,13 @@ Terminal.prototype.processCommands = function() {
       break;
     case 'history':
       if (! isNaN(commands[1])) {
+        var history = [];
         for (var i = commands[1] < TERMINAL_MESSAGE_ROWS ? commands[1] : TERMINAL_MESSAGE_ROWS; i >= 0; i--) {
           if (this.bufferLog[i]) {
-            this.pushMessage(this.bufferLog[i]);
+            history.push(this.bufferLog[i])
           }
         }
+        this.pushMessage(history);
       }
       else {
         this.pushMessage('Please enter a number: E.G. history 2');

@@ -12,6 +12,7 @@ var DEFAULT_TERMINAL_COLOR = 'white';
 var CURSOR_BLINK_DELAY = 680;
 var TERMINAL_MESSAGE_ROWS = 17;
 var TERMINAL_MESSAGE_CHARS = 49;
+var MESSAGE_DELAY = 50;
 
 var DEFAULT_MESSAGE = "I don't understand. Type help for a list of commands";
 var VALID_COMMANDS = {

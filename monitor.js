@@ -50,18 +50,19 @@ Monitor.prototype.render = function() {
   if (this.terminal.message.length > 0) {
     var message;
     for (var index = 0, row = 0; index < this.terminal.message.length && row < TERMINAL_MESSAGE_ROWS; index++) {
-      message = [this.terminal.message[this.terminal.message.length - index - 1]];
+      var rawMessage = (this.terminal.message[this.terminal.message.length - index - 1]).split("\n");
+      message = rawMessage;
 
-      if (message[0].length > TERMINAL_MESSAGE_CHARS) {
-        var words = message[0].split(' ');
-        message = [words[0]];
-        for (var i = 1, j = 0; i < words.length; i++) {
-          if ((message[j] + ' ' + words[i]).length > TERMINAL_MESSAGE_CHARS) {
-            message[++j] = words[i];
+      if (this.terminal.messageInterval && index == 0) {
+        message = [];
+        var charCount = 0;
+        for (var line = 0; line < rawMessage.length; line++) {
+          if (charCount + rawMessage[line].length > this.terminal.messageEnd) {
+            message[line] = rawMessage[line].slice(0, this.terminal.messageEnd - charCount);
+            break;
           }
-          else {
-            message[j] += ' ' + words[i];
-          }
+          message[line] = rawMessage[line];
+          charCount += rawMessage[line].length;
         }
       }
 
