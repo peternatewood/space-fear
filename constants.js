@@ -24,7 +24,7 @@ var VALID_COMMANDS = {
 
 var KEY_LINE_WIDTH = 4;
 var KEY_MARGIN = 2;
-var MIN_KEY_SIZE = 28;
+var MIN_KEY_SIZE = 36;
 var KEY_TEXT_SIZE = 14;
 
 var KEYBOARD_HEIGHT = 216;

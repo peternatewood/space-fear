@@ -31,30 +31,30 @@ Key = function(key, x, y, w, h) {
 }
 Key.prototype.render = function(context) {
   context.fillStyle = this.pressed ? KEY_LIGHT_BORDER_COLOR : KEY_DARK_BORDER_COLOR;
-  context.fillRect(this.x, this.y, this.w + (2 * KEY_LINE_WIDTH), this.h + (2 * KEY_LINE_WIDTH));
+  context.fillRect(this.x, this.y, this.w, this.h);
 
   context.fillStyle = this.pressed ? KEY_DARK_BORDER_COLOR : KEY_LIGHT_BORDER_COLOR;
   context.beginPath();
   context.moveTo(this.x, this.y);
-  context.lineTo(this.x + this.w + (2 * KEY_LINE_WIDTH), this.y);
-  context.lineTo(this.x + this.w + KEY_LINE_WIDTH, this.y + KEY_LINE_WIDTH);
-  context.lineTo(this.x + KEY_LINE_WIDTH, this.y + this.h + KEY_LINE_WIDTH);
-  context.lineTo(this.x, this.y + this.h + (2 * KEY_LINE_WIDTH));
+  context.lineTo(this.x + this.w, this.y);
+  context.lineTo(this.x + this.w - KEY_LINE_WIDTH, this.y + KEY_LINE_WIDTH);
+  context.lineTo(this.x + KEY_LINE_WIDTH, this.y + this.h - KEY_LINE_WIDTH);
+  context.lineTo(this.x, this.y + this.h);
   context.closePath();
   context.fill();
 
   context.fillStyle = KEY_COLOR;
-  context.fillRect(this.x + KEY_LINE_WIDTH, this.y + KEY_LINE_WIDTH, this.w, this.h);
+  context.fillRect(this.x + KEY_LINE_WIDTH, this.y + KEY_LINE_WIDTH, this.w - (2 * KEY_LINE_WIDTH), this.h - (2 * KEY_LINE_WIDTH));
 
   context.fillStyle = KEY_TEXT_COLOR;
   if (this.key.length == 2) {
     this.key.split('').forEach(function(char, index) {
-      context.fillText(char, this.x + (MIN_KEY_SIZE / 4), this.y + (MIN_KEY_SIZE / 2) + (index * KEY_TEXT_SIZE));
-      context.strokeText(char, this.x + (MIN_KEY_SIZE / 4), this.y + (MIN_KEY_SIZE / 2) + (index * KEY_TEXT_SIZE));
+      context.fillText(char, this.x + (MIN_KEY_SIZE / 4), this.y + ((index + 1) * KEY_TEXT_SIZE));
+      context.strokeText(char, this.x + (MIN_KEY_SIZE / 4), this.y + ((index + 1) * KEY_TEXT_SIZE));
     }, this);
   }
   else {
-    context.fillText(this.key, this.x + (MIN_KEY_SIZE / 4), this.y + (MIN_KEY_SIZE / 2) + (KEY_TEXT_SIZE / 3));
-    context.strokeText(this.key, this.x + (MIN_KEY_SIZE / 4), this.y + (MIN_KEY_SIZE / 2) + (KEY_TEXT_SIZE / 3));
+    context.fillText(this.key, this.x + (MIN_KEY_SIZE / 4), this.y + (MIN_KEY_SIZE / 2));
+    context.strokeText(this.key, this.x + (MIN_KEY_SIZE / 4), this.y + (MIN_KEY_SIZE / 2));
   }
 };
