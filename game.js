@@ -18,7 +18,7 @@ ready(function() {
   var canvas = document.getElementById('main-viewport');
   var context = canvas.getContext('2d');
 
-  var keyboard = new Keyboard(canvas);
+  window.keyboard = new Keyboard(canvas);
   window.monitor = new Monitor(canvas);
 
   document.addEventListener('keydown', function(event) {
@@ -47,6 +47,30 @@ ready(function() {
       else {
         keyboard.keys[index].pressed = false;
       }
+    }
+  });
+  canvas.addEventListener('mousedown', function(event) {
+    if (event.buttons == 1) {
+      var key;
+      for (var index = 0; index < keyboard.keys.length; index++) {
+        key = keyboard.keys[index];
+        if (key.disabled && key.detectMouseOver(event)) {
+          key.grab(event);
+          keyboard.grabbedKey = key;
+          break;
+        }
+      }
+    }
+  });
+  canvas.addEventListener('mousemove', function(event) {
+    if (keyboard.grabbedKey) {
+      keyboard.grabbedKey.updateMousePos(event);
+    }
+  });
+  canvas.addEventListener('mouseup', function(event) {
+    if (keyboard.grabbedKey) {
+      keyboard.grabbedKey.release(event);
+      keyboard.grabbedKey = false;
     }
   });
 

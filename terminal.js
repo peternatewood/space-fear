@@ -87,10 +87,14 @@ Terminal.prototype.readBuffer = function() {
 };
 Terminal.prototype.startMessage = function() {
   this.messageEnd = 0;
+  var messageLength = 0;
+  this.message[this.message.length - 1].split("\n").forEach(function(msg) {
+    messageLength += msg.length;
+  });
 
   this.messageInterval = setInterval(function() {
     this.messageEnd++;
-    if (this.messageEnd > this.message[0].length) {
+    if (this.messageEnd > messageLength) {
       this.skipMessage();
     }
   }.bind(this), MESSAGE_DELAY);

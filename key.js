@@ -4,7 +4,16 @@ Key = function(key, x, y, w, h) {
   this.y = y;
   this.w = w ? w : MIN_KEY_SIZE;
   this.h = h ? h : MIN_KEY_SIZE;
+
+  this.keyboardx = x;
+  this.keyboardy = y;
+  this.mousex;
+  this.mousey;
+
   this.pressed = false;
+  this.disabled = false;
+  this.onKeyboard = true;
+  this.moveInterval;
 
   var getKeyWidth = function(chars) {
     add = 0;
@@ -29,6 +38,54 @@ Key = function(key, x, y, w, h) {
 
   return this;
 }
+Key.prototype.detectMouseOver = function(event, isKeyboard) {
+  var prefix = isKeyboard ? 'keyboard' : '';
+  if (event.offsetX < this[prefix + 'x']) {
+    return false;
+  }
+  else if (event.offsetX > (this[prefix + 'x'] + this.w)) {
+    return false;
+  }
+  else if (event.offsetY < this[prefix + 'y']) {
+    return false;
+  }
+  else if (event.offsetY > (this[prefix + 'y'] + this.h)) {
+    return false;
+  }
+  return true;
+}
+Key.prototype.updateMousePos = function(event) {
+  this.mousex = event.offsetX;
+  this.mousey = event.offsetY;
+};
+Key.prototype.grab = function(event) {
+  this.updateMousePos(event);
+  this.onKeyboard = false;
+  this.moveInterval = setInterval(function() {
+    var diffx = this.mousex - this.x - (this.w / 2);
+    var diffy = this.mousey - this.y - (this.h / 2);
+    this.x += (diffx / 4);
+    this.y += (diffy / 4);
+  }.bind(this), KEY_MOVE_DELAY);
+};
+Key.prototype.release = function(event) {
+  clearInterval(this.moveInterval);
+  if (this.detectMouseOver(event, true)) {
+    this.x = this.keyboardx;
+    this.y = this.keyboardy;
+    this.onKeyboard = true;
+  }
+  else {
+    this.moveInterval = setInterval(function() {
+      if (this.y + this.w >= 600) {
+        clearInterval(this.moveInterval);
+        this.y = 600 - this.h;
+        return;
+      }
+      this.y += 4;
+    }.bind(this), KEY_MOVE_DELAY);
+  }
+};
 Key.prototype.render = function(context) {
   context.fillStyle = this.pressed ? KEY_LIGHT_BORDER_COLOR : KEY_DARK_BORDER_COLOR;
   context.fillRect(this.x, this.y, this.w, this.h);

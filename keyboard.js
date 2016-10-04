@@ -63,7 +63,17 @@ Keyboard.prototype.render = function() {
   this.context.lineWidth = 0.5;
   this.context.font = KEY_TEXT_SIZE + "px " + KEY_FONT;
 
+  var grabbedKeys = [];
   this.keys.forEach(function(key) {
+    if (key.onKeyboard) {
+      key.render(this.context);
+    }
+    else {
+      grabbedKeys.push(key);
+    }
+  }, this);
+
+  grabbedKeys.forEach(function(key) {
     key.render(this.context);
   }, this);
 };
