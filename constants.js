@@ -49,6 +49,15 @@ var KEYBOARD_KEYS = [
   ['Shift', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<,', '>.', '?/', 'Shift'],
   ['Ctrl', 'Meta', 'Alt', ' ', 'Alt', 'Ctrl'],
 ];
+
+var not = function(boolean) {
+  if (boolean === true || boolean === false) {
+    return ! boolean;
+  }
+  else {
+    throw new TypeError('function not() expects a boolean, got ' + typeof boolean);
+  }
+}
 var convertKeyToIndex = function(key) {
   switch(key) {
     case '~': return 0;
