@@ -18,8 +18,8 @@ ready(function() {
   var canvas = document.getElementById('main-viewport');
   var context = canvas.getContext('2d');
 
-  window.keyboard = new Keyboard(canvas);
-  window.monitor = new Monitor(canvas);
+  var keyboard = new Keyboard(canvas);
+  var monitor = new Monitor(canvas);
 
   document.addEventListener('keydown', function(event) {
     var index = convertKeyToIndex(event.key.toUpperCase());
@@ -28,12 +28,13 @@ ready(function() {
       // shortcuts
       if (! event.ctrlKey && ! event.altKey) event.preventDefault();
 
+      monitor.terminal.handleInput(event);
       if (index.length > 1)
         index.forEach(function(i) {
-          keyboard.keys[i].pressed = true;
+          keyboard.keys[i].activate();
         }, this);
       else {
-        keyboard.keys[index].pressed = true;
+        keyboard.keys[index].activate();
       }
     }
   });
@@ -42,10 +43,10 @@ ready(function() {
     if (index !== false) {
       if (index.length > 1)
         index.forEach(function(i) {
-          keyboard.keys[i].pressed = false;
+          keyboard.keys[i].deactivate();
         }, this);
       else {
-        keyboard.keys[index].pressed = false;
+        keyboard.keys[index].deactivate();
       }
     }
   });
