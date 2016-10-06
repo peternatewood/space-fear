@@ -38,6 +38,14 @@ Key = function(key, x, y, w, h) {
 
   return this;
 }
+Key.prototype.activate = function() {
+  if (this.disabled === false) {
+    this.pressed = true;
+  }
+};
+Key.prototype.deactivate = function() {
+  this.pressed = false;
+}
 Key.prototype.detectMouseOver = function(event, isKeyboard) {
   var prefix = isKeyboard ? 'keyboard' : '';
   if (event.offsetX < this[prefix + 'x']) {
