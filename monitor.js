@@ -13,6 +13,7 @@ Monitor = function(canvas) {
   return this;
 }
 Monitor.prototype.render = function() {
+  var x, y;
   // Render monitor
   this.context.fillStyle = MONITOR_COLOR;
   this.context.fillRect(this.x, this.y, this.w, this.h);
@@ -79,4 +80,13 @@ Monitor.prototype.render = function() {
       }
     }
   }
+
+  // Render monitor glare
+  x = this.x + this.w;
+  y = this.y;
+  var gradient = this.context.createRadialGradient(x, y, this.w / 3, x++, y--, 2);
+  gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+  gradient.addColorStop(1, 'rgba(255, 255, 255, 0.5)');
+  this.context.fillStyle = gradient;
+  this.context.fillRect(this.x + MONITOR_MARGIN + 4, this.y + MONITOR_MARGIN + 4, this.w - (2 * MONITOR_MARGIN) - 8, this.h - (2 * MONITOR_MARGIN) - 8);
 };

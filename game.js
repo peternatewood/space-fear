@@ -23,7 +23,7 @@ ready(function() {
 
   document.addEventListener('keydown', function(event) {
     var index = convertKeyToIndex(event.key.toUpperCase());
-    if (! event.repeat && index !== false) {
+    if (index !== false) {
       // Don't prevent default if ctrl or alt are held down, to allow keyboard
       // shortcuts
       if (! event.ctrlKey && ! event.altKey) event.preventDefault();
