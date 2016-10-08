@@ -6,7 +6,7 @@ Button = function(x, y) {
   this.color = POWER_COLOR;
 
   this.pressed = false;
-  this.state = 'standby';
+  this.state = 'off';
   this.pulseDir;
   this.pulseInterval;
 

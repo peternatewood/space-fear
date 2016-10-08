@@ -56,7 +56,8 @@ Keyboard.prototype.render = function() {
   this.context.closePath();
   this.context.fill();
 
-  this.context.clearRect(this.x + edge, this.y + edge, this.w - (2 * edge), this.h - (2 * edge));
+  this.context.fillStyle = BLACK;
+  this.context.fillRect(this.x + edge, this.y + edge, this.w - (2 * edge), this.h - (2 * edge));
 
   this.context.fillStyle = KEY_TEXT_COLOR;
   this.context.strokeStyle = KEY_TEXT_COLOR;

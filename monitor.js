@@ -36,7 +36,8 @@ Monitor.prototype.render = function() {
   this.context.closePath();
   this.context.fill();
 
-  this.context.clearRect(this.x + MONITOR_MARGIN, this.y + MONITOR_MARGIN, this.w - (2 * MONITOR_MARGIN), this.h - (2 * MONITOR_MARGIN));
+  this.context.fillStyle = BLACK;
+  this.context.fillRect(this.x + MONITOR_MARGIN, this.y + MONITOR_MARGIN, this.w - (2 * MONITOR_MARGIN), this.h - (2 * MONITOR_MARGIN));
 
   // Render power button
   this.powerButton.render(this.context);
