@@ -1,3 +1,6 @@
+// Declare all classes here
+var Button, Key, Keyboard, Monitor, Save, Terminal;
+
 var MONITOR_TOP = 24;
 var MONITOR_MARGIN = 24;
 var MONITOR_PADDING = 12;
@@ -22,11 +25,12 @@ var TERMINAL_MESSAGE_ROWS = 17;
 var TERMINAL_MESSAGE_CHARS = 49;
 var MESSAGE_DELAY = 50;
 
+var STARTING_MESSAGE = 'Please enter your name to login';
 var DEFAULT_MESSAGE = "I don't understand. Type help for a list of commands";
 var VALID_COMMANDS = {
   clear: 'Clear terminal messages from the monitor.',
   color: 'Change the color of the terminal text.',
-  computer: "Enter computer question mode. While in question mode, a \"question\" is asked by typing an object, character, or place name, E.G. \"hibernation\". The computer will provide whatever details it can in response. Type \"exit\" to leave question mode.",
+  computer: "Ask the computer a question. E.G. \"computer where am I?\"",
   help: "Help: Display all valid terminal commands. Specify a command to learn more about it, E.G. \"help computer\".",
   history: 'List a number of previously entered commands.',
   map: "Display the map of current floor. Specify a floor to see its map instead, E.G. \"map 2\".",
@@ -68,9 +72,6 @@ var KEY_LIGHT_BORDER_COLOR = "#AA5";
 var KEY_DARK_BORDER_COLOR = "#663";
 
 var KEY_FONT = "Courier";
-
-// Declare all classes here
-var Button, Key, Keyboard, Monitor, Terminal;
 
 var KEYBOARD_KEYS = [
   ['~`', '!1', '@2', '#3', '$4', '%5', '^6', '&7', '*8', '(9', ')0', '_-', '+=', 'Backspace'],
