@@ -3,7 +3,7 @@ Button = function(x, y) {
   this.y = y;
   this.rad = POWER_BUTTON_SIZE;
   this.glowRad = 2;
-  this.color = POWER_COLOR;
+  this.color = POWER_OFF_COLOR;
 
   this.pressed = false;
   this.state = 'off';
@@ -87,7 +87,7 @@ Button.prototype.render = function(context) {
   context.fill();
 
   if (not(this.pressed) && this.state !== 'on') {
-    x--;
+    x++;
     y--;
   }
 
@@ -98,7 +98,7 @@ Button.prototype.render = function(context) {
   context.fill();
 
   if (not(this.pressed)) {
-    x -= this.state == 'off' ? 2 : 1;
+    x += this.state == 'off' ? 2 : 1;
     y -= this.state == 'off' ? 2 : 1;
   }
 

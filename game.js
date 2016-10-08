@@ -23,12 +23,13 @@ ready(function() {
 
   document.addEventListener('keydown', function(event) {
     var index = convertKeyToIndex(event.key.toUpperCase());
-    if (monitor.allowInput() && index !== false) {
+    if (index !== false) {
       // Don't prevent default if ctrl or alt are held down, to allow keyboard
       // shortcuts
       if (! event.ctrlKey && ! event.altKey) event.preventDefault();
 
-      monitor.terminal.handleInput(event);
+      if (monitor.allowInput()) monitor.terminal.handleInput(event);
+
       if (index.length > 1)
         index.forEach(function(i) {
           keyboard.keys[i].activate();

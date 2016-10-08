@@ -23,6 +23,9 @@ Monitor.prototype.releaseButton = function(event) {
     case 'on':
       this.renderBoot();
       break;
+    case 'off':
+      this.renderBootDown();
+      break;
   }
 };
 Monitor.prototype.render = function() {
@@ -70,6 +73,16 @@ Monitor.prototype.render = function() {
     var opacity = Math.round((this.bootStep / MONITOR_BOOT_STEPS) * 100) / 100;
     this.context.fillStyle = 'rgba(255, 255, 255, ' + opacity + ')';
     this.context.fillRect(x, y, w, h);
+  }
+  else if (this.booting == 'down') {
+    h = (this.bootStep / MONITOR_BOOT_STEPS) * (this.h - (2 * MONITOR_MARGIN));
+
+    x = this.x + MONITOR_MARGIN + 6;
+    y = this.y + (this.h / 2);
+    w = this.w - (2 * MONITOR_MARGIN) - 12;
+
+    this.context.fillStyle = 'white';
+    this.context.fillRect(x, y - (h / 2), w, h);
   }
 
   // Render monitor glare
@@ -119,8 +132,10 @@ Monitor.prototype.renderTerminal = function() {
     }
   }
 };
-Monitor.prototype.renderBoot = function () {
+Monitor.prototype.renderBoot = function() {
+  clearInterval(this.bootInterval);
   this.booting = 'up';
+  this.bootStep = MONITOR_BOOT_STEPS;
   this.bootInterval = setInterval(stepBootSequence.bind(this), 10);
 
   function stepBootSequence() {
@@ -129,6 +144,26 @@ Monitor.prototype.renderBoot = function () {
     }
     else {
       this.bootStep -= 2;
+    }
+
+    if (this.bootStep <= 0) {
+      this.booting = 'none';
+      clearInterval(this.bootInterval);
+    }
+  }
+};
+Monitor.prototype.renderBootDown = function() {
+  clearInterval(this.bootInterval);
+  this.booting = 'down';
+  this.bootStep = MONITOR_BOOT_STEPS;
+  this.bootInterval = setInterval(stepBootDown.bind(this), 10);
+
+  function stepBootDown() {
+    if (this.bootStep > MONITOR_BOOT_STEPS / 8) {
+      this.bootStep -= 40;
+    }
+    else {
+      this.bootStep -= 5;
     }
 
     if (this.bootStep <= 0) {
