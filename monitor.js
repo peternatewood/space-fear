@@ -9,9 +9,13 @@ Monitor = function(canvas) {
 
   this.terminal = new Terminal;
   this.powerButton = new Button(this.x + this.w + (2 * POWER_BUTTON_SIZE), this.y + this.h - POWER_BUTTON_SIZE);
+  this.booting = false;
 
   return this;
 }
+Monitor.prototype.allowInput = function() {
+  return not(this.booting) && this.powerButton.state == 'on';
+};
 Monitor.prototype.render = function() {
   var x, y;
   // Render monitor
@@ -44,6 +48,18 @@ Monitor.prototype.render = function() {
   this.powerButton.render(this.context);
 
   // Render terminal
+  this.renderTerminal();
+
+  // Render monitor glare
+  x = this.x + this.w;
+  y = this.y;
+  var gradient = this.context.createRadialGradient(x, y, this.w / 3, x++, y--, 2);
+  gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+  gradient.addColorStop(1, 'rgba(255, 255, 255, 0.5)');
+  this.context.fillStyle = gradient;
+  this.context.fillRect(this.x + MONITOR_MARGIN + 4, this.y + MONITOR_MARGIN + 4, this.w - (2 * MONITOR_MARGIN) - 8, this.h - (2 * MONITOR_MARGIN) - 8);
+};
+Monitor.prototype.renderTerminal = function() {
   this.context.fillStyle = this.terminal.color;
   this.context.fillText('> ' + this.terminal.buffer, this.x + MONITOR_MARGIN + MONITOR_PADDING, this.y + this.h - (MONITOR_MARGIN + MONITOR_PADDING));
 
@@ -80,13 +96,4 @@ Monitor.prototype.render = function() {
       }
     }
   }
-
-  // Render monitor glare
-  x = this.x + this.w;
-  y = this.y;
-  var gradient = this.context.createRadialGradient(x, y, this.w / 3, x++, y--, 2);
-  gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
-  gradient.addColorStop(1, 'rgba(255, 255, 255, 0.5)');
-  this.context.fillStyle = gradient;
-  this.context.fillRect(this.x + MONITOR_MARGIN + 4, this.y + MONITOR_MARGIN + 4, this.w - (2 * MONITOR_MARGIN) - 8, this.h - (2 * MONITOR_MARGIN) - 8);
 };
