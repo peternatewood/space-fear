@@ -9,12 +9,21 @@ Monitor = function(canvas) {
 
   this.terminal = new Terminal;
   this.powerButton = new Button(this.x + this.w + (2 * POWER_BUTTON_SIZE), this.y + this.h - POWER_BUTTON_SIZE);
-  this.booting = false;
+  this.booting = 'none';
+  this.bootStep = MONITOR_BOOT_STEPS;
+  this.bootInterval;
 
   return this;
 }
 Monitor.prototype.allowInput = function() {
-  return not(this.booting) && this.powerButton.state == 'on';
+  return this.powerButton.state == 'on';
+};
+Monitor.prototype.releaseButton = function(event) {
+  switch(this.powerButton.release(event)) {
+    case 'on':
+      this.renderBoot();
+      break;
+  }
 };
 Monitor.prototype.render = function() {
   var x, y;
@@ -47,8 +56,21 @@ Monitor.prototype.render = function() {
   // Render power button
   this.powerButton.render(this.context);
 
-  // Render terminal
-  this.renderTerminal();
+  // Render terminal if monitor is on
+  if (this.powerButton.state == 'on') {
+    this.renderTerminal();
+  }
+
+  // Render boot flash
+  if (this.booting == 'up'){
+    x = this.x + MONITOR_MARGIN + 6;
+    y = this.y + MONITOR_MARGIN + 6;
+    w = this.w - (2 * MONITOR_MARGIN) - 12;
+    h = this.h - (2 * MONITOR_MARGIN) - 12;
+    var opacity = Math.round((this.bootStep / MONITOR_BOOT_STEPS) * 100) / 100;
+    this.context.fillStyle = 'rgba(255, 255, 255, ' + opacity + ')';
+    this.context.fillRect(x, y, w, h);
+  }
 
   // Render monitor glare
   x = this.x + this.w;
@@ -94,6 +116,24 @@ Monitor.prototype.renderTerminal = function() {
         this.context.fillText(message[message.length - 1 - i], this.x + MONITOR_MARGIN + MONITOR_PADDING, this.y + this.h - (MONITOR_MARGIN + MONITOR_PADDING) - ((TERMINAL_MESSAGE_ROWS - row) * KEY_TEXT_SIZE) - 2);
         row++;
       }
+    }
+  }
+};
+Monitor.prototype.renderBoot = function () {
+  this.booting = 'up';
+  this.bootInterval = setInterval(stepBootSequence.bind(this), 10);
+
+  function stepBootSequence() {
+    if (this.bootStep > MONITOR_BOOT_STEPS / 2) {
+      this.bootStep -= 10;
+    }
+    else {
+      this.bootStep -= 2;
+    }
+
+    if (this.bootStep <= 0) {
+      this.booting = 'none';
+      clearInterval(this.bootInterval);
     }
   }
 };

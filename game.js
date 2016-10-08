@@ -82,7 +82,7 @@ ready(function() {
       keyboard.grabbedKey = false;
     }
     else if (monitor.powerButton.pressed && monitor.powerButton.detectMouseOver(event)) {
-      monitor.powerButton.release(event);
+      monitor.releaseButton(event);
     }
   });
 

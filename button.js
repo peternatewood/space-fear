@@ -34,7 +34,7 @@ Button.prototype.press = function(event) {
 };
 Button.prototype.release = function(event) {
   this.pressed = false;
-  this.toggle();
+  return this.toggle();
 };
 Button.prototype.toggle = function() {
   switch(this.state) {
@@ -54,6 +54,7 @@ Button.prototype.toggle = function() {
       this.color = POWER_OFF_COLOR;
       break;
   }
+  return this.state;
 };
 Button.prototype.pulse = function() {
   this.stopPulse();
