@@ -52,13 +52,18 @@ ready(function() {
   });
   canvas.addEventListener('mousedown', function(event) {
     if (event.buttons == 1) {
-      var key;
-      for (var index = 0; index < keyboard.keys.length; index++) {
-        key = keyboard.keys[index];
-        if (key.disabled && key.detectMouseOver(event)) {
-          key.grab(event);
-          keyboard.grabbedKey = key;
-          break;
+      if (monitor.powerButton.detectMouseOver(event)) {
+        monitor.powerButton.press(event);
+      }
+      else {
+        var key;
+        for (var index = 0; index < keyboard.keys.length; index++) {
+          key = keyboard.keys[index];
+          if (key.disabled && key.detectMouseOver(event)) {
+            key.grab(event);
+            keyboard.grabbedKey = key;
+            return;
+          }
         }
       }
     }
@@ -67,11 +72,17 @@ ready(function() {
     if (keyboard.grabbedKey) {
       keyboard.grabbedKey.updateMousePos(event);
     }
+    else if (monitor.powerButton.pressed && not(monitor.powerButton.detectMouseOver(event))) {
+      monitor.powerButton.pressed = false;
+    }
   });
   canvas.addEventListener('mouseup', function(event) {
     if (keyboard.grabbedKey) {
       keyboard.grabbedKey.release(event);
       keyboard.grabbedKey = false;
+    }
+    else if (monitor.powerButton.pressed && monitor.powerButton.detectMouseOver(event)) {
+      monitor.powerButton.release(event);
     }
   });
 

@@ -8,10 +8,12 @@ Monitor = function(canvas) {
   this.h = MONITOR_HEIGHT;
 
   this.terminal = new Terminal;
+  this.powerButton = new Button(this.x + this.w + (2 * POWER_BUTTON_SIZE), this.y + this.h - POWER_BUTTON_SIZE);
 
   return this;
 }
 Monitor.prototype.render = function() {
+  // Render monitor
   this.context.fillStyle = MONITOR_COLOR;
   this.context.fillRect(this.x, this.y, this.w, this.h);
 
@@ -36,6 +38,10 @@ Monitor.prototype.render = function() {
 
   this.context.clearRect(this.x + MONITOR_MARGIN, this.y + MONITOR_MARGIN, this.w - (2 * MONITOR_MARGIN), this.h - (2 * MONITOR_MARGIN));
 
+  // Render power button
+  this.powerButton.render(this.context);
+
+  // Render terminal
   this.context.fillStyle = this.terminal.color;
   this.context.fillText('> ' + this.terminal.buffer, this.x + MONITOR_MARGIN + MONITOR_PADDING, this.y + this.h - (MONITOR_MARGIN + MONITOR_PADDING));
 
