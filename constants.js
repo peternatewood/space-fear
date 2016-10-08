@@ -4,10 +4,16 @@ var MONITOR_PADDING = 12;
 var MONITOR_HEIGHT = 320;
 var MONITOR_WIDTH = 480;
 
+var POWER_BUTTON_SIZE = 16;
+var BUTTON_PULSE_DELAY = 270;
+
 var MONITOR_COLOR = '#553';
 var MONITOR_MEDIUM_COLOR = '#332';
 var MONITOR_DARK_COLOR = '#26261A';
 var DEFAULT_TERMINAL_COLOR = 'white';
+var POWER_COLOR = '#811';
+var POWER_PRESSED_COLOR = '#F00';
+var POWER_OFF_COLOR = '#441010';
 
 var CURSOR_BLINK_DELAY = 680;
 var TERMINAL_MESSAGE_ROWS = 17;
@@ -40,7 +46,7 @@ var KEY_DARK_BORDER_COLOR = "#663";
 var KEY_FONT = "Courier";
 
 // Declare all classes here
-var Key, Keyboard, Monitor, Terminal;
+var Button, Key, Keyboard, Monitor, Terminal;
 
 var KEYBOARD_KEYS = [
   ['~`', '!1', '@2', '#3', '$4', '%5', '^6', '&7', '*8', '(9', ')0', '_-', '+=', 'Backspace'],
@@ -57,6 +63,41 @@ var not = function(boolean) {
   else {
     throw new TypeError('function not() expects a boolean, got ' + typeof boolean);
   }
+}
+var convertDecToHex = function(decimal) {
+  var first = Math.floor(decimal / 16);
+  if (first > 9) {
+    first = String.fromCharCode(first + 55);
+  }
+
+  var last = decimal % 16;
+  if (last > 9) {
+    last = String.fromCharCode(last + 55);
+  }
+
+  return first.toString() + last.toString();
+}
+var modHexColor = function(hex, mod) {
+  var newHex = '#000';
+  var colors = [];
+  var mod = typeof mod == "number" ? mod : 2;
+
+  if (/^#[\dA-F]{3}$/.test(hex)) {
+    hex.toUpperCase().slice(1).split('').forEach(function(val) {
+      var color = Math.round(parseInt('0x' + val + val, 16) * mod);
+      colors.push(convertDecToHex(color < 255 ? color : 255));
+    });
+    newHex = '#' + colors.join('');
+  }
+  else if (/^#[\dA-F]{6}$/.test(hex)) {
+    hex.toUpperCase().slice(1).match(/.{2}/g).forEach(function(val) {
+      var color = Math.round(parseInt('0x' + val, 16) * mod);
+      colors.push(convertDecToHex(color < 255 ? color : 255));
+    });
+    newHex = '#' + colors.join('');
+  }
+
+  return newHex;
 }
 var convertKeyToIndex = function(key) {
   switch(key) {
