@@ -141,7 +141,7 @@ Terminal.prototype.pushMessage = function(rawMessage) {
 Terminal.prototype.processCommands = function() {
   var commands = this.bufferLog[0].split(' ');
 
-  switch(commands[0].toLowerCase()) {
+  switch(getCommand(commands[0])) {
     case 'clear':
       this.message = [];
       break;
@@ -154,8 +154,9 @@ Terminal.prototype.processCommands = function() {
       this.pushMessage(message);
       break;
     case 'help':
-      if (commands[1] && VALID_COMMANDS[commands[1].toLowerCase()]) {
-        this.pushMessage(commands[1].toLowerCase() + ': ' + VALID_COMMANDS[commands[1].toLowerCase()]);
+      var commandName = getCommand(commands[1]);
+      if (commands[1] && VALID_COMMANDS[commandName]) {
+        this.pushMessage(commandName + ': ' + VALID_COMMANDS[commandName]);
       }
       else {
         var commands = [];
@@ -164,7 +165,7 @@ Terminal.prototype.processCommands = function() {
             commands.push(prop);
           }
         }
-        this.pushMessage(commands);
+        this.pushMessage(commands.join(', '));
       }
       break;
     case 'history':
