@@ -13,6 +13,10 @@ Monitor = function(canvas) {
   this.bootStep = MONITOR_BOOT_STEPS;
   this.bootInterval;
 
+  this.ascii = [];
+  this.asciiColor = BLACK;
+  this.asciiInterval;
+
   return this;
 }
 Monitor.prototype.allowInput = function() {
@@ -130,6 +134,32 @@ Monitor.prototype.renderTerminal = function() {
         row++;
       }
     }
+  }
+};
+Monitor.prototype.renderAscii = function() {
+  this.context.fillStyle = this.asciiColor;
+  var x = this.x + MONITOR_MARGIN + MONITOR_PADDING;
+  var y = this.y + MONITOR_MARGIN + MONITOR_PADDING;
+  if (this.ascii && this.ascii instanceof Array) {
+    this.ascii.forEach(function(line, index) {
+      this.context.fillText(line, x, y);
+      y += KEY_TEXT_SIZE;
+    }, this);
+  }
+};
+Monitor.prototype.startAsciiAnimation = function(name) {
+  clearInterval(this.asciiInterval);
+  this.ascii = ASCII[name].split("\n");
+  this.asciiColor = BLACK;
+  this.asciiInterval = setInterval(stepAscii.bind(this), 410);
+
+  function stepAscii() {
+    var color = this.asciiColor.toUpperCase();
+
+    if (color == '#FFFFFF') {
+      clearInterval(this.asciiInterval);
+    }
+    this.asciiColor = modHexColor(color, 2);
   }
 };
 Monitor.prototype.renderBoot = function() {
