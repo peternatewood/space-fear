@@ -359,3 +359,18 @@ var VALID_COLORS = [
   'yellowgreen',
   'rebeccapurple',
 ];
+
+var ASCII = {
+  end: centerAscii("\n\n\n\n*         *\n\n\n**\\/^^^^^\\/**\n^^/\\_/\\^^\n\n\n\nYOU'RE DEAD"),
+}
+function centerAscii(ascii) {
+  return ascii.split("\n").map(function(line) {
+    var centered = line;
+    if (line.length > 0) {
+      for (var i = 0; i < Math.floor((TERMINAL_MESSAGE_CHARS - line.length) / 2); i++) {
+        centered = ' ' + centered;
+      }
+    }
+    return centered;
+  }).join("\n");
+}
