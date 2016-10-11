@@ -4,6 +4,7 @@ Game = function() {
 
   this.keyboard = new Keyboard(this.canvas);
   this.monitor = new Monitor(this.canvas);
+  this.animationFrame;
 
   document.addEventListener('keydown', this.handleKeyDown.bind(this));
   document.addEventListener('keyup', this.handleKeyUp.bind(this));
@@ -22,10 +23,26 @@ Game.prototype.start = function() {
     this.monitor.render();
 
     if (progress < 2000) {
-      window.requestAnimationFrame(step.bind(this));
+      this.animationFrame = window.requestAnimationFrame(step.bind(this));
     }
   }
-  window.requestAnimationFrame(step.bind(this));
+  this.animationFrame = window.requestAnimationFrame(step.bind(this));
+};
+Game.prototype.destroy = function () {
+  document.removeEventListener('keydown', this.handleKeyDown);
+  document.removeEventListener('keyup', this.handleKeyUp);
+
+  this.canvas.removeEventListener('mousedown', this.handleMouseDown);
+  this.canvas.removeEventListener('mousemove', this.handleMouseMove);
+  this.canvas.removeEventListener('mouseup', this.handleMouseUp);
+
+  this.monitor.powerButton.destroy();
+  this.monitor.terminal.destroy();
+  this.monitor.destroy();
+
+  window.cancelAnimationFrame(this.animationFrame);
+
+  this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 };
 Game.prototype.handleKeyDown = function(event) {
   var index = convertKeyToIndex(event.key.toUpperCase());

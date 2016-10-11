@@ -14,6 +14,9 @@ Button = function(x, y) {
 
   return this;
 }
+Button.prototype.destroy = function() {
+  clearInterval(this.pulseInterval);
+};
 Button.prototype.detectMouseOver = function(event) {
   if (event.offsetX < this.x) {
     return false;

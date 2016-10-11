@@ -20,6 +20,10 @@ Terminal = function() {
 
   return this;
 }
+Terminal.prototype.destroy = function() {
+  clearInterval(this.blinkInterval);
+  clearInterval(this.messageInterval);
+};
 Terminal.prototype.handleInput = function(event) {
   if (this.allowInput) {
     this.restartCursorBlink();

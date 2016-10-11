@@ -38,6 +38,9 @@ Key = function(key, x, y, w, h) {
 
   return this;
 }
+Key.prototype.destroy = function() {
+  clearInterval(this.moveInterval);
+};
 Key.prototype.activate = function() {
   if (this.disabled === false) {
     this.pressed = true;

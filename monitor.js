@@ -19,6 +19,10 @@ Monitor = function(canvas) {
 
   return this;
 }
+Monitor.prototype.destroy = function() {
+  clearInterval(this.bootInterval);
+  clearInterval(this.asciiInterval);
+};
 Monitor.prototype.allowInput = function() {
   return this.powerButton.state == 'on';
 };
