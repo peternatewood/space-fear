@@ -13,8 +13,8 @@ Monitor = function(canvas) {
   this.bootStep = MONITOR_BOOT_STEPS;
   this.bootInterval;
 
-  this.ascii = [];
-  this.asciiColor = BLACK;
+  this.ascii = "";
+  this.asciiColor = 'white';
   this.asciiInterval;
 
   return this;

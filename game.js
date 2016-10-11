@@ -1,20 +1,4 @@
-var ready = function(fun) {
-  if (document.readyState != 'loading') {
-    fun();
-  }
-  else if (document.addEventListener) {
-    document.addEventListener('DOMContentLoaded', fun);
-  }
-  else {
-    document.attachEvent('onreadystatechange', function() {
-      if (document.readyState != 'loading') {
-        fun();
-      }
-    });
-  }
-}
-
-ready(function() {
+Game = function() {
   var canvas = document.getElementById('main-viewport');
   var context = canvas.getContext('2d');
 
@@ -33,7 +17,7 @@ ready(function() {
       if (index.length > 1)
         index.forEach(function(i) {
           keyboard.keys[i].activate();
-        }, this);
+        });
       else {
         keyboard.keys[index].activate();
       }
@@ -45,7 +29,7 @@ ready(function() {
       if (index.length > 1)
         index.forEach(function(i) {
           keyboard.keys[i].deactivate();
-        }, this);
+        });
       else {
         keyboard.keys[index].deactivate();
       }
@@ -100,4 +84,4 @@ ready(function() {
     }
   }
   window.requestAnimationFrame(step);
-});
+};
