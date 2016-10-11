@@ -1,8 +1,5 @@
 Monitor = function(canvas) {
-  this.canvas = canvas;
-  this.context = canvas.getContext('2d');
-
-  this.x = (this.canvas.width / 2) - (MONITOR_WIDTH / 2);
+  this.x = (canvas.width / 2) - (MONITOR_WIDTH / 2);
   this.y = MONITOR_TOP;
   this.w = MONITOR_WIDTH;
   this.h = MONITOR_HEIGHT;
@@ -39,40 +36,40 @@ Monitor.prototype.releaseButton = function(event) {
       break;
   }
 };
-Monitor.prototype.render = function() {
+Monitor.prototype.render = function(context) {
   var x, y;
   // Render monitor
-  this.context.fillStyle = MONITOR_COLOR;
-  this.context.fillRect(this.x, this.y, this.w, this.h);
+  context.fillStyle = MONITOR_COLOR;
+  context.fillRect(this.x, this.y, this.w, this.h);
 
-  this.context.fillStyle = MONITOR_MEDIUM_COLOR;
-  this.context.beginPath();
-  this.context.moveTo(this.x, this.y);
-  this.context.lineTo(this.x + this.w, this.y);
-  this.context.lineTo(this.x + this.w - (2 * MONITOR_MARGIN), this.y + (2 * MONITOR_MARGIN));
-  this.context.lineTo(this.x + (2 * MONITOR_MARGIN), this.y + this.h - (2 * MONITOR_MARGIN));
-  this.context.lineTo(this.x, this.y + this.h);
-  this.context.closePath();
-  this.context.fill();
+  context.fillStyle = MONITOR_MEDIUM_COLOR;
+  context.beginPath();
+  context.moveTo(this.x, this.y);
+  context.lineTo(this.x + this.w, this.y);
+  context.lineTo(this.x + this.w - (2 * MONITOR_MARGIN), this.y + (2 * MONITOR_MARGIN));
+  context.lineTo(this.x + (2 * MONITOR_MARGIN), this.y + this.h - (2 * MONITOR_MARGIN));
+  context.lineTo(this.x, this.y + this.h);
+  context.closePath();
+  context.fill();
 
-  this.context.fillStyle = MONITOR_DARK_COLOR;
-  this.context.beginPath();
-  this.context.moveTo(this.x, this.y);
-  this.context.lineTo(this.x + this.w, this.y);
-  this.context.lineTo(this.x + this.w - (2 * MONITOR_MARGIN), this.y + (2 * MONITOR_MARGIN));
-  this.context.lineTo(this.x + (2 * MONITOR_MARGIN), this.y + (2 * MONITOR_MARGIN));
-  this.context.closePath();
-  this.context.fill();
+  context.fillStyle = MONITOR_DARK_COLOR;
+  context.beginPath();
+  context.moveTo(this.x, this.y);
+  context.lineTo(this.x + this.w, this.y);
+  context.lineTo(this.x + this.w - (2 * MONITOR_MARGIN), this.y + (2 * MONITOR_MARGIN));
+  context.lineTo(this.x + (2 * MONITOR_MARGIN), this.y + (2 * MONITOR_MARGIN));
+  context.closePath();
+  context.fill();
 
-  this.context.fillStyle = BLACK;
-  this.context.fillRect(this.x + MONITOR_MARGIN, this.y + MONITOR_MARGIN, this.w - (2 * MONITOR_MARGIN), this.h - (2 * MONITOR_MARGIN));
+  context.fillStyle = BLACK;
+  context.fillRect(this.x + MONITOR_MARGIN, this.y + MONITOR_MARGIN, this.w - (2 * MONITOR_MARGIN), this.h - (2 * MONITOR_MARGIN));
 
   // Render power button
-  this.powerButton.render(this.context);
+  this.powerButton.render(context);
 
   // Render terminal if monitor is on
   if (this.powerButton.state == 'on') {
-    this.renderTerminal();
+    this.renderTerminal(context);
   }
 
   // Render boot flash
@@ -82,8 +79,8 @@ Monitor.prototype.render = function() {
     w = this.w - (2 * MONITOR_MARGIN) - 12;
     h = this.h - (2 * MONITOR_MARGIN) - 12;
     var opacity = Math.round((this.bootStep / MONITOR_BOOT_STEPS) * 100) / 100;
-    this.context.fillStyle = 'rgba(255, 255, 255, ' + opacity + ')';
-    this.context.fillRect(x, y, w, h);
+    context.fillStyle = 'rgba(255, 255, 255, ' + opacity + ')';
+    context.fillRect(x, y, w, h);
   }
   else if (this.booting == 'down') {
     h = (this.bootStep / MONITOR_BOOT_STEPS) * (this.h - (2 * MONITOR_MARGIN));
@@ -92,29 +89,29 @@ Monitor.prototype.render = function() {
     y = this.y + (this.h / 2);
     w = this.w - (2 * MONITOR_MARGIN) - 12;
 
-    this.context.fillStyle = 'white';
-    this.context.fillRect(x, y - (h / 2), w, h);
+    context.fillStyle = 'white';
+    context.fillRect(x, y - (h / 2), w, h);
   }
 
   // Render monitor glare
   x = this.x + this.w;
   y = this.y;
-  var gradient = this.context.createRadialGradient(x, y, this.w / 3, x++, y--, 2);
+  var gradient = context.createRadialGradient(x, y, this.w / 3, x++, y--, 2);
   gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
   gradient.addColorStop(1, 'rgba(255, 255, 255, 0.5)');
-  this.context.fillStyle = gradient;
-  this.context.fillRect(this.x + MONITOR_MARGIN + 4, this.y + MONITOR_MARGIN + 4, this.w - (2 * MONITOR_MARGIN) - 8, this.h - (2 * MONITOR_MARGIN) - 8);
+  context.fillStyle = gradient;
+  context.fillRect(this.x + MONITOR_MARGIN + 4, this.y + MONITOR_MARGIN + 4, this.w - (2 * MONITOR_MARGIN) - 8, this.h - (2 * MONITOR_MARGIN) - 8);
 };
-Monitor.prototype.renderTerminal = function() {
-  this.context.fillStyle = this.terminal.color;
-  this.context.fillText('> ' + this.terminal.buffer, this.x + MONITOR_MARGIN + MONITOR_PADDING, this.y + this.h - (MONITOR_MARGIN + MONITOR_PADDING));
+Monitor.prototype.renderTerminal = function(context) {
+  context.fillStyle = this.terminal.color;
+  context.fillText('> ' + this.terminal.buffer, this.x + MONITOR_MARGIN + MONITOR_PADDING, this.y + this.h - (MONITOR_MARGIN + MONITOR_PADDING));
 
   if (this.terminal.showCursor) {
     var cursor = ' _';
     for (var i = 0; i <= this.terminal.cursor; i++) {
       cursor = ' ' + cursor;
     }
-    this.context.fillText(cursor, this.x + MONITOR_MARGIN + MONITOR_PADDING, this.y + this.h - (MONITOR_MARGIN + MONITOR_PADDING));
+    context.fillText(cursor, this.x + MONITOR_MARGIN + MONITOR_PADDING, this.y + this.h - (MONITOR_MARGIN + MONITOR_PADDING));
   }
 
   if (this.terminal.message.length > 0) {
@@ -137,19 +134,19 @@ Monitor.prototype.renderTerminal = function() {
       }
 
       for (var i = message.length - 1; i >= 0 && row < TERMINAL_MESSAGE_ROWS; i--) {
-        this.context.fillText(message[message.length - 1 - i], this.x + MONITOR_MARGIN + MONITOR_PADDING, this.y + this.h - (MONITOR_MARGIN + MONITOR_PADDING) - ((TERMINAL_MESSAGE_ROWS - row) * KEY_TEXT_SIZE) - 2);
+        context.fillText(message[message.length - 1 - i], this.x + MONITOR_MARGIN + MONITOR_PADDING, this.y + this.h - (MONITOR_MARGIN + MONITOR_PADDING) - ((TERMINAL_MESSAGE_ROWS - row) * KEY_TEXT_SIZE) - 2);
         row++;
       }
     }
   }
 };
-Monitor.prototype.renderAscii = function() {
-  this.context.fillStyle = this.asciiColor;
+Monitor.prototype.renderAscii = function(context) {
+  context.fillStyle = this.asciiColor;
   var x = this.x + MONITOR_MARGIN + MONITOR_PADDING;
   var y = this.y + MONITOR_MARGIN + MONITOR_PADDING;
   if (this.ascii && this.ascii instanceof Array) {
     this.ascii.forEach(function(line, index) {
-      this.context.fillText(line, x, y);
+      context.fillText(line, x, y);
       y += KEY_TEXT_SIZE;
     }, this);
   }

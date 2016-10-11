@@ -1,5 +1,5 @@
 // Declare all classes here
-var Button, Game, Key, Keyboard, Monitor, Save, Terminal;
+var Button, Cursor, Game, Key, Keyboard, Monitor, Save, Terminal;
 
 var MONITOR_TOP = 24;
 var MONITOR_MARGIN = 24;
@@ -13,6 +13,10 @@ var BUTTON_PULSE_DELAY = 270;
 
 var BLACK = '#060606';
 var WHITE = '#E7E7E7';
+
+var CURSOR_OUTLINE = '#062606';
+var CURSOR_HOVER = '#08E708';
+
 var MONITOR_COLOR = '#553';
 var MONITOR_MEDIUM_COLOR = '#332';
 var MONITOR_DARK_COLOR = '#26261A';

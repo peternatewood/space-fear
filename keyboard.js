@@ -1,9 +1,6 @@
 Keyboard = function(canvas) {
-  this.canvas = canvas;
-  this.context = canvas.getContext('2d');
-
-  this.x = (this.canvas.width / 2) - (KEYBOARD_WIDTH / 2);
-  this.y = this.canvas.height - KEYBOARD_HEIGHT;
+  this.x = (canvas.width / 2) - (KEYBOARD_WIDTH / 2);
+  this.y = canvas.height - KEYBOARD_HEIGHT;
   this.h = KEYBOARD_HEIGHT;
   this.w = KEYBOARD_WIDTH;
 
@@ -40,34 +37,34 @@ Keyboard = function(canvas) {
   }
   return this;
 }
-Keyboard.prototype.render = function() {
+Keyboard.prototype.render = function(context) {
   var edge = KEYBOARD_EDGE_WIDTH;
 
-  this.context.fillStyle = KEY_DARK_BORDER_COLOR;
-  this.context.fillRect(this.x, this.y, this.w, this.h);
+  context.fillStyle = KEY_DARK_BORDER_COLOR;
+  context.fillRect(this.x, this.y, this.w, this.h);
 
-  this.context.fillStyle = KEY_LIGHT_BORDER_COLOR;
-  this.context.beginPath();
-  this.context.moveTo(this.x, this.y);
-  this.context.lineTo(this.x + this.w, this.y);
-  this.context.lineTo(this.x + this.w - edge, this.y + edge);
-  this.context.lineTo(this.x + edge, this.y + this.h - edge);
-  this.context.lineTo(this.x, this.y + this.h);
-  this.context.closePath();
-  this.context.fill();
+  context.fillStyle = KEY_LIGHT_BORDER_COLOR;
+  context.beginPath();
+  context.moveTo(this.x, this.y);
+  context.lineTo(this.x + this.w, this.y);
+  context.lineTo(this.x + this.w - edge, this.y + edge);
+  context.lineTo(this.x + edge, this.y + this.h - edge);
+  context.lineTo(this.x, this.y + this.h);
+  context.closePath();
+  context.fill();
 
-  this.context.fillStyle = BLACK;
-  this.context.fillRect(this.x + edge, this.y + edge, this.w - (2 * edge), this.h - (2 * edge));
+  context.fillStyle = BLACK;
+  context.fillRect(this.x + edge, this.y + edge, this.w - (2 * edge), this.h - (2 * edge));
 
-  this.context.fillStyle = KEY_TEXT_COLOR;
-  this.context.strokeStyle = KEY_TEXT_COLOR;
-  this.context.lineWidth = 0.5;
-  this.context.font = KEY_TEXT_SIZE + "px " + KEY_FONT;
+  context.fillStyle = KEY_TEXT_COLOR;
+  context.strokeStyle = KEY_TEXT_COLOR;
+  context.lineWidth = 0.5;
+  context.font = KEY_TEXT_SIZE + "px " + KEY_FONT;
 
   var grabbedKeys = [];
   this.keys.forEach(function(key) {
     if (key.onKeyboard) {
-      key.render(this.context);
+      key.render(context);
     }
     else {
       grabbedKeys.push(key);
@@ -75,6 +72,6 @@ Keyboard.prototype.render = function() {
   }, this);
 
   grabbedKeys.forEach(function(key) {
-    key.render(this.context);
+    key.render(context);
   }, this);
 };

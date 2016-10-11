@@ -4,6 +4,7 @@ Game = function() {
 
   this.keyboard = new Keyboard(this.canvas);
   this.monitor = new Monitor(this.canvas);
+  this.cursor = new Cursor();
   this.animationFrame;
 
   document.addEventListener('keydown', this.handleKeyDown.bind(this));
@@ -19,8 +20,9 @@ Game.prototype.start = function() {
     var progress = timestamp - start;
 
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.keyboard.render();
-    this.monitor.render();
+    this.keyboard.render(this.context);
+    this.monitor.render(this.context);
+    this.cursor.render(this.context);
 
     if (progress < 2000) {
       this.animationFrame = window.requestAnimationFrame(step.bind(this));
@@ -91,11 +93,21 @@ Game.prototype.handleMouseDown = function(event) {
   }
 };
 Game.prototype.handleMouseMove = function(event) {
+  this.cursor.move(event);
+
   if (this.keyboard.grabbedKey) {
     this.keyboard.grabbedKey.updateMousePos(event);
   }
-  else if (this.monitor.powerButton.pressed && not(this.monitor.powerButton.detectMouseOver(event))) {
-    this.monitor.powerButton.pressed = false;
+
+  if (this.monitor.powerButton.detectMouseOver(event)) {
+    this.cursor.hoverOn();
+  }
+  else {
+    this.cursor.hoverOff();
+
+    if (this.monitor.powerButton.pressed) {
+      this.monitor.powerButton.pressed = false;
+    }
   }
 };
 Game.prototype.handleMouseUp = function(event) {
