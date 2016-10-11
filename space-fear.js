@@ -16,4 +16,5 @@ var ready = function(fun) {
 
 ready(function() {
   var game = new Game();
+  game.start();
 });

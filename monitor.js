@@ -14,7 +14,7 @@ Monitor = function(canvas) {
   this.bootInterval;
 
   this.ascii = "";
-  this.asciiColor = 'white';
+  this.asciiColor = WHITE;
   this.asciiInterval;
 
   return this;

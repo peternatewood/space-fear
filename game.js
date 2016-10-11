@@ -1,87 +1,94 @@
 Game = function() {
-  var canvas = document.getElementById('main-viewport');
-  var context = canvas.getContext('2d');
+  this.canvas = document.getElementById('main-viewport');
+  this.context = this.canvas.getContext('2d');
 
-  var keyboard = new Keyboard(canvas);
-  var monitor = new Monitor(canvas);
+  this.keyboard = new Keyboard(this.canvas);
+  this.monitor = new Monitor(this.canvas);
 
-  document.addEventListener('keydown', function(event) {
-    var index = convertKeyToIndex(event.key.toUpperCase());
-    if (index !== false) {
-      // Don't prevent default if ctrl or alt are held down, to allow keyboard
-      // shortcuts
-      if (! event.ctrlKey && ! event.altKey) event.preventDefault();
+  document.addEventListener('keydown', this.handleKeyDown.bind(this));
+  document.addEventListener('keyup', this.handleKeyUp.bind(this));
 
-      if (monitor.allowInput()) monitor.terminal.handleInput(event);
-
-      if (index.length > 1)
-        index.forEach(function(i) {
-          keyboard.keys[i].activate();
-        });
-      else {
-        keyboard.keys[index].activate();
-      }
-    }
-  });
-  document.addEventListener('keyup', function(event) {
-    var index = convertKeyToIndex(event.key.toUpperCase());
-    if (index !== false) {
-      if (index.length > 1)
-        index.forEach(function(i) {
-          keyboard.keys[i].deactivate();
-        });
-      else {
-        keyboard.keys[index].deactivate();
-      }
-    }
-  });
-  canvas.addEventListener('mousedown', function(event) {
-    if (event.buttons == 1) {
-      if (monitor.powerButton.detectMouseOver(event)) {
-        monitor.powerButton.press(event);
-      }
-      else {
-        var key;
-        for (var index = 0; index < keyboard.keys.length; index++) {
-          key = keyboard.keys[index];
-          if (key.disabled && key.detectMouseOver(event)) {
-            key.grab(event);
-            keyboard.grabbedKey = key;
-            return;
-          }
-        }
-      }
-    }
-  });
-  canvas.addEventListener('mousemove', function(event) {
-    if (keyboard.grabbedKey) {
-      keyboard.grabbedKey.updateMousePos(event);
-    }
-    else if (monitor.powerButton.pressed && not(monitor.powerButton.detectMouseOver(event))) {
-      monitor.powerButton.pressed = false;
-    }
-  });
-  canvas.addEventListener('mouseup', function(event) {
-    if (keyboard.grabbedKey) {
-      keyboard.grabbedKey.release(event);
-      keyboard.grabbedKey = false;
-    }
-    else if (monitor.powerButton.pressed && monitor.powerButton.detectMouseOver(event)) {
-      monitor.releaseButton(event);
-    }
-  });
-
-  var step = function(timestamp) {
+  this.canvas.addEventListener('mousedown', this.handleMouseDown.bind(this));
+  this.canvas.addEventListener('mousemove', this.handleMouseMove.bind(this));
+  this.canvas.addEventListener('mouseup', this.handleMouseUp.bind(this));
+}
+Game.prototype.start = function() {
+  function step(timestamp) {
     if (! start) var start = timestamp;
     var progress = timestamp - start;
 
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    keyboard.render();
-    monitor.render();
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.keyboard.render();
+    this.monitor.render();
 
     if (progress < 2000) {
-      window.requestAnimationFrame(step);
+      window.requestAnimationFrame(step.bind(this));
     }
   }
-  window.requestAnimationFrame(step);
+  window.requestAnimationFrame(step.bind(this));
+};
+Game.prototype.handleKeyDown = function(event) {
+  var index = convertKeyToIndex(event.key.toUpperCase());
+  if (index !== false) {
+    // Don't prevent default if ctrl or alt are held down, to allow this.keyboard
+    // shortcuts
+    if (! event.ctrlKey && ! event.altKey) event.preventDefault();
+
+    if (this.monitor.allowInput()) this.monitor.terminal.handleInput(event);
+
+    if (index.length > 1)
+      index.forEach(function(i) {
+        this.keyboard.keys[i].activate();
+      }, this);
+    else {
+      this.keyboard.keys[index].activate();
+    }
+  }
+};
+Game.prototype.handleKeyUp = function(event) {
+  var index = convertKeyToIndex(event.key.toUpperCase());
+  if (index !== false) {
+    if (index.length > 1)
+      index.forEach(function(i) {
+        this.keyboard.keys[i].deactivate();
+      }, this);
+    else {
+      this.keyboard.keys[index].deactivate();
+    }
+  }
+};
+Game.prototype.handleMouseDown = function(event) {
+  if (event.buttons == 1) {
+    if (this.monitor.powerButton.detectMouseOver(event)) {
+      this.monitor.powerButton.press(event);
+    }
+    else {
+      var key;
+      for (var index = 0; index < this.keyboard.keys.length; index++) {
+        key = this.keyboard.keys[index];
+        if (key.disabled && key.detectMouseOver(event)) {
+          key.grab(event);
+          this.keyboard.grabbedKey = key;
+          return;
+        }
+      }
+    }
+  }
+};
+Game.prototype.handleMouseMove = function(event) {
+  if (this.keyboard.grabbedKey) {
+    this.keyboard.grabbedKey.updateMousePos(event);
+  }
+  else if (this.monitor.powerButton.pressed && not(this.monitor.powerButton.detectMouseOver(event))) {
+    this.monitor.powerButton.pressed = false;
+  }
+};
+Game.prototype.handleMouseUp = function(event) {
+  if (this.keyboard.grabbedKey) {
+    this.keyboard.grabbedKey.release(event);
+    this.keyboard.grabbedKey = false;
+  }
+  else if (this.monitor.powerButton.pressed && this.monitor.powerButton.detectMouseOver(event)) {
+    this.monitor.releaseButton(event);
+  }
 };

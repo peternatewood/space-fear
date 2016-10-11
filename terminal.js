@@ -12,7 +12,7 @@ Terminal = function() {
   this.messageLog = [STARTING_MESSAGE];
   this.messageEnd = 0;
   this.messageInterval = false;
-  this.color = DEFAULT_TERMINAL_COLOR;
+  this.color = WHITE;
 
   this.save = new Save();
 
