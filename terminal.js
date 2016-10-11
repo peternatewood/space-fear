@@ -6,10 +6,10 @@ Terminal = function() {
   this.bufferLog = [];
   this.logOffset = 0;
   this.blinkInterval = 0;
-  this.enterName = true;
+  this.scene = 0;
 
-  this.message = [STARTING_MESSAGE];
-  this.messageLog = [STARTING_MESSAGE];
+  this.message = [SCENE_MESSAGES[0]];
+  this.messageLog = [SCENE_MESSAGES[0]];
   this.messageEnd = 0;
   this.messageInterval = false;
   this.color = WHITE;
@@ -23,6 +23,9 @@ Terminal = function() {
 Terminal.prototype.destroy = function() {
   clearInterval(this.blinkInterval);
   clearInterval(this.messageInterval);
+};
+Terminal.prototype.sceneMessage = function() {
+  return SCENE_MESSAGES[this.scene];
 };
 Terminal.prototype.handleInput = function(event) {
   if (this.allowInput) {
@@ -147,63 +150,70 @@ Terminal.prototype.pushMessage = function(rawMessage) {
   this.startMessage();
 };
 Terminal.prototype.processCommands = function() {
-  if (this.enterName) {
-    var name = this.bufferLog[0];
-    if (name.length > 0) {
-      this.save.save({name: name});
-      this.enterName = false;
-      this.pushMessage('Welcome, ' + name + '. How can I help you?');
-    }
-    else {
-      this.pushMessage(STARTING_MESSAGE);
-    }
-  }
-  else {
-    var commands = this.bufferLog[0].split(' ');
-    switch(getCommand(commands[0])) {
-      case 'clear':
-        this.message = [];
-        break;
-      case 'color':
-        var message = 'Valid options include: default, crimson, lime, slateblue';
-        if (VALID_COLORS.includes(commands[1])) {
-          this.color = commands[1] == 'default' ? DEFAULT_TERMINAL_COLOR : commands[1];
-          message = 'Color: ' + commands[1];
-        }
-        this.pushMessage(message);
-        break;
-      case 'help':
-        var commandName = getCommand(commands[1]);
-        if (commands[1] && VALID_COMMANDS[commandName]) {
-          this.pushMessage(commandName + ': ' + VALID_COMMANDS[commandName]);
-        }
-        else {
-          var commands = [];
-          for (var prop in VALID_COMMANDS) {
-            if (VALID_COMMANDS.hasOwnProperty(prop)) {
-              commands.push(prop);
-            }
+  switch(this.scene) {
+    case 0:
+      var name = this.bufferLog[0].trim();
+      if (/\S+/.test(name)) {
+        this.save.save({name: name});
+        this.scene = 1;
+        this.pushMessage('Welcome to Space Fear, ' + name + '. ' + this.sceneMessage());
+      }
+      else {
+        this.pushMessage(this.sceneMessage());
+      }
+      break;
+
+    default:
+      var commands = this.bufferLog[0].split(' ');
+      switch(getCommand(commands[0])) {
+        case 'clear':
+          this.message = [];
+          break;
+
+        case 'color':
+          var message = 'Valid options include: default, crimson, lime, slateblue';
+          if (VALID_COLORS.includes(commands[1])) {
+            this.color = commands[1] == 'default' ? DEFAULT_TERMINAL_COLOR : commands[1];
+            message = 'Color: ' + commands[1];
           }
-          this.pushMessage(commands.join(', '));
-        }
-        break;
-      case 'history':
-        if (! isNaN(commands[1])) {
-          var history = [];
-          for (var i = commands[1] < TERMINAL_MESSAGE_ROWS ? commands[1] : TERMINAL_MESSAGE_ROWS; i >= 0; i--) {
-            if (this.bufferLog[i]) {
-              history.push(this.bufferLog[i])
-            }
+          this.pushMessage(message);
+          break;
+
+        case 'help':
+          var commandName = getCommand(commands[1]);
+          if (commands[1] && VALID_COMMANDS[commandName]) {
+            this.pushMessage(commandName + ': ' + VALID_COMMANDS[commandName]);
           }
-          this.pushMessage(history);
-        }
-        else {
-          this.pushMessage('Please enter a number: E.G. history 2');
-        }
-        break;
-      default:
-        this.pushMessage(DEFAULT_MESSAGE);
-        break;
-    }
+          else {
+            var commands = [];
+            for (var prop in VALID_COMMANDS) {
+              if (VALID_COMMANDS.hasOwnProperty(prop)) {
+                commands.push(prop);
+              }
+            }
+            this.pushMessage(commands.join(', '));
+          }
+          break;
+
+        case 'history':
+          if (! isNaN(commands[1])) {
+            var history = [];
+            for (var i = commands[1] < TERMINAL_MESSAGE_ROWS ? commands[1] : TERMINAL_MESSAGE_ROWS; i >= 0; i--) {
+              if (this.bufferLog[i]) {
+                history.push(this.bufferLog[i])
+              }
+            }
+            this.pushMessage(history);
+          }
+          else {
+            this.pushMessage('Please enter a number: E.G. history 2');
+          }
+          break;
+
+        default:
+          this.pushMessage(DEFAULT_MESSAGE);
+          break;
+      }
+      break;
   }
 };

@@ -25,7 +25,10 @@ var TERMINAL_MESSAGE_ROWS = 17;
 var TERMINAL_MESSAGE_CHARS = 49;
 var MESSAGE_DELAY = 50;
 
-var STARTING_MESSAGE = 'Please enter your name to login';
+var SCENE_MESSAGES = [
+  'Please enter your name',
+  'Interact solely through the keyboard. Your progress is automatically preserved and will be restored on future sessions. You are an engineer working onboard a deep space research station. You begin in the hibernation center. You have awoken after a normal eight hours of sleep.',
+];
 var DEFAULT_MESSAGE = "I don't understand. Type help for a list of commands";
 var VALID_COMMANDS = {
   clear: 'Clear terminal messages from the monitor.',

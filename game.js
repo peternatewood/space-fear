@@ -36,8 +36,6 @@ Game.prototype.destroy = function () {
   this.canvas.removeEventListener('mousemove', this.handleMouseMove);
   this.canvas.removeEventListener('mouseup', this.handleMouseUp);
 
-  this.monitor.powerButton.destroy();
-  this.monitor.terminal.destroy();
   this.monitor.destroy();
 
   window.cancelAnimationFrame(this.animationFrame);

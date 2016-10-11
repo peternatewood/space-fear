@@ -20,6 +20,9 @@ Monitor = function(canvas) {
   return this;
 }
 Monitor.prototype.destroy = function() {
+  this.powerButton.destroy();
+  this.terminal.destroy();
+
   clearInterval(this.bootInterval);
   clearInterval(this.asciiInterval);
 };
