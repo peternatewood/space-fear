@@ -35,12 +35,12 @@ var SCENE_MESSAGES = [
 ];
 var DEFAULT_MESSAGE = "I don't understand. Type help for a list of commands";
 var VALID_COMMANDS = {
-  clear: 'Clear terminal messages from the monitor.',
-  color: 'Change the color of the terminal text.',
-  computer: "Ask the computer a question. E.G. \"computer where am I?\"",
-  help: "Help: Display all valid terminal commands. Specify a command to learn more about it, E.G. \"help computer\".",
-  history: 'List a number of previously entered commands.',
-  map: "Display the map of current floor. Specify a floor to see its map instead, E.G. \"map 2\".",
+  clear: 'clear: Clear terminal messages from the monitor.',
+  color: 'color [color name]: Change the color of the terminal text.',
+  computer: "comp/computer [question]: Ask the computer a question. E.G. \"computer where am I?\"",
+  help: "help [command]: Display all valid terminal commands. Specify a command to learn more about it, E.G. \"help computer\".",
+  history: 'history [number]: List a number of previously entered commands.',
+  map: "map [floor number]: Display the map of current floor. Specify a floor to see its map instead, E.G. \"map 2\".",
 }
 var getCommand = function(input) {
   if (typeof input == 'undefined') {
