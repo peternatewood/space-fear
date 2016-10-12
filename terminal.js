@@ -14,6 +14,7 @@ Terminal = function() {
   this.messageInterval = false;
   this.color = WHITE;
 
+  this.computer = new Computer();
   this.save = new Save();
 
   this.restartCursorBlink();
@@ -179,10 +180,15 @@ Terminal.prototype.processCommands = function() {
           this.pushMessage(message);
           break;
 
+        case 'computer':
+          var question = commands.slice(1).join(' ');
+          this.pushMessage(this.computer.answerQuestion(question));
+          break;
+
         case 'help':
           var commandName = getCommand(commands[1]);
           if (commands[1] && VALID_COMMANDS[commandName]) {
-            this.pushMessage(commandName + ': ' + VALID_COMMANDS[commandName]);
+            this.pushMessage(VALID_COMMANDS[commandName]);
           }
           else {
             var commands = [];
