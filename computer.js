@@ -1,13 +1,12 @@
-var QUESTION_TYPES = /who|how|what|when|why|where/;
-
 Computer = function() {
   return this;
 }
-Computer.prototype.answerQuestion = function(question) {
+Computer.prototype.answerQuestion = function(rawQuestion) {
+  var question = rawQuestion.toLowerCase();
   var types = question.match(QUESTION_TYPES);
   if (! types) {
     if (/\?/.test(question)) {
-      return 'This is a yes/no question.';
+      return this.handleYesNo(question);
     }
     else {
       return 'Ask a who, how, what, when, why, or where question.';
@@ -17,6 +16,36 @@ Computer.prototype.answerQuestion = function(question) {
     return 'Please ask only one type of question at a time';
   }
   else {
-    return 'You asked a ' + types[0] + ' question.';
+    return this['handle' + capitalize(types[0])](question.replace(types[0], "").trim());
   }
 };
+Computer.prototype.handleWho = function(question) {
+  return 'Who question: ' + question;
+};
+Computer.prototype.handleHow = function(question) {
+  return 'How question: ' + question;
+};
+Computer.prototype.handleWhat = function(question) {
+  if (question.includes('station')) {
+    return 'The deep space research station';
+  }
+  else {
+    return "I'm afraid don't know anything about that";
+  }
+};
+Computer.prototype.handleWhen = function(question) {
+  return 'When question: ' + question;
+};
+Computer.prototype.handleWhy = function(question) {
+  return 'Why question: ' + question;
+};
+Computer.prototype.handleWhere = function(question) {
+  return 'Where question: ' + question;
+};
+Computer.prototype.handleYesNo = function(question) {
+  return 'Yes/no question: ' + question;
+};
+var QUESTION_TYPES = /who|how|what|when|why|where/;
+function capitalize(word) {
+  return word[0].toUpperCase() + word.slice(1);
+}
