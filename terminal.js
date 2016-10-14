@@ -13,6 +13,8 @@ Terminal = function() {
   this.messageEnd = 0;
   this.messageInterval = false;
   this.color = WHITE;
+  this.ascii = [];
+  this.currentFloor = 3;
 
   this.computer = new Computer();
   this.save = new Save();
@@ -54,6 +56,7 @@ Terminal.prototype.handleInput = function(event) {
         this.skipMessage();
       }
 
+      if (this.ascii.length > 0) this.ascii = [];
       if (this.buffer) this.readBuffer();
     }
     else if (event.key == 'ArrowLeft' && this.cursor > 0) {
@@ -213,6 +216,16 @@ Terminal.prototype.processCommands = function() {
           }
           else {
             this.pushMessage('Please enter a number: E.G. history 2');
+          }
+          break;
+
+        case 'map':
+          var map = ASCII['map' + commands[1]];
+          if (map) {
+            this.ascii = map;
+          }
+          else {
+            this.ascii = ASCII['map' + this.currentFloor];
           }
           break;
 
