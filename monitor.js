@@ -10,8 +10,6 @@ Monitor = function(canvas) {
   this.bootStep = MONITOR_BOOT_STEPS;
   this.bootInterval;
 
-  this.ascii = "";
-  this.asciiColor = WHITE;
   this.asciiInterval;
 
   return this;
@@ -114,7 +112,10 @@ Monitor.prototype.renderTerminal = function(context) {
     context.fillText(cursor, this.x + MONITOR_MARGIN + MONITOR_PADDING, this.y + this.h - (MONITOR_MARGIN + MONITOR_PADDING));
   }
 
-  if (this.terminal.message.length > 0) {
+  if (this.terminal.ascii.length > 0) {
+    this.renderAscii(context);
+  }
+  else if (this.terminal.message.length > 0) {
     var message;
     for (var index = 0, row = 0; index < this.terminal.message.length && row < TERMINAL_MESSAGE_ROWS; index++) {
       var rawMessage = (this.terminal.message[this.terminal.message.length - index - 1]).split("\n");
@@ -141,11 +142,11 @@ Monitor.prototype.renderTerminal = function(context) {
   }
 };
 Monitor.prototype.renderAscii = function(context) {
-  context.fillStyle = this.asciiColor;
+  context.fillStyle = this.terminal.color;
   var x = this.x + MONITOR_MARGIN + MONITOR_PADDING;
-  var y = this.y + MONITOR_MARGIN + MONITOR_PADDING;
-  if (this.ascii && this.ascii instanceof Array) {
-    this.ascii.forEach(function(line, index) {
+  var y = this.y + MONITOR_MARGIN + MONITOR_PADDING + 8;
+  if (this.terminal.ascii instanceof Array) {
+    this.terminal.ascii.forEach(function(line, index) {
       context.fillText(line, x, y);
       y += KEY_TEXT_SIZE;
     }, this);
