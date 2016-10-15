@@ -1,6 +1,6 @@
-# Space Fear
+# [Space Fear](http://peternatewood.com/projects/space-fear)
 
-A text-based horror adventure set in outer space. Utilizes the HTML 5 canvas and JavaScript for rendering.
+A text-based horror adventure set in outer space. Utilizes the HTML 5 canvas and JavaScript for rendering. You can try the latest build [here on my website.](http://peternatewood.com/projects/space-fear)
 
 <img src="/img/monitor-off.png" title="Monitor turned off">
 
