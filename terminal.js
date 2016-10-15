@@ -21,6 +21,11 @@ Terminal = function() {
 
   this.restartCursorBlink();
 
+  this.rooms = {}
+  ROOMS.forEach(function(room) {
+    this.rooms[room.name] = new Room(room.messages, room.items);
+  }, this);
+
   return this;
 }
 Terminal.prototype.destroy = function() {
@@ -160,6 +165,7 @@ Terminal.prototype.processCommands = function() {
       if (/\S+/.test(name)) {
         this.save.save({name: name});
         this.scene = 1;
+        this.rooms.hibernation.items.bed3 = this.rooms.hibernation.items.bed3.replace('{{name}}', name);
         this.pushMessage('Welcome to Space Fear, ' + name + '. ' + this.sceneMessage());
       }
       else {
@@ -216,6 +222,17 @@ Terminal.prototype.processCommands = function() {
           }
           else {
             this.pushMessage('Please enter a number: E.G. history 2');
+          }
+          break;
+
+        case 'look':
+          if (this.rooms[commands[1]]) {
+            if (this.rooms[commands[1]].items[commands[2]]) {
+              this.pushMessage(this.rooms[commands[1]].items[commands[2]]);
+            }
+            else {
+              this.pushMessage(this.rooms[commands[1]].message());
+            }
           }
           break;
 
