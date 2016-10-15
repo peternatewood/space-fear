@@ -1,5 +1,5 @@
 // Declare all classes here
-var Button, Computer, Cursor, Game, Key, Keyboard, Monitor, Save, Terminal;
+var Button, Computer, Cursor, Game, Key, Keyboard, Monitor, Room, Save, Terminal;
 
 var MONITOR_TOP = 24;
 var MONITOR_MARGIN = 24;
@@ -38,9 +38,10 @@ var VALID_COMMANDS = {
   clear: 'clear: Clear terminal messages from the monitor.',
   color: 'color [color name]: Change the color of the terminal text.',
   computer: "comp/computer [question]: Ask the computer a question. E.G. \"computer where am I?\"",
-  help: "help [command]: Display all valid terminal commands. Specify a command to learn more about it, E.G. \"help computer\".",
+  help: "help [command]: Display all valid terminal commands. Specify a command to learn more about it. E.G. \"help computer\".",
   history: 'history [number]: List a number of previously entered commands.',
-  map: "map [floor number]: Display the map of current floor. Specify a floor to see its map instead, E.G. \"map 2\".",
+  look: 'look [object]: Look at the current room, or a specific object in the room.',
+  map: "map [floor number]: Display the map of current floor. Specify a floor to see its map instead. E.G. \"map 2\".",
 }
 var getCommand = function(input) {
   if (typeof input == 'undefined') {
@@ -57,6 +58,8 @@ var getCommand = function(input) {
       return 'help';
     case 'history':
       return 'history';
+    case 'look':
+      return 'look';
     case 'map': case 'm':
       return 'map';
     default: return 'invalid';
