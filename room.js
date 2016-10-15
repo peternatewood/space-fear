@@ -35,6 +35,8 @@ var ROOMS = [
       bed5: 'Bed 5: One of three beds along the long wall of hibernation. The name "Doctor Gustav Tanith" is written on the footboard.',
       bed6: 'Bed 6: One of three beds along the long wall of hibernation. The name "Biologist Asha Cansu" is written on the footboard.',
     },
-    adjacents: ['hibernation_hall'],
+    adjacents: [
+      {name: 'hibernation_hall', state: 'closed'},
+    ],
   }
 ];
