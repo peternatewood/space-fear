@@ -166,7 +166,7 @@ Terminal.prototype.processCommands = function() {
       if (/\S+/.test(name)) {
         this.save.save({name: name});
         this.scene = 1;
-        this.rooms.hibernation.items.bed3 = this.rooms.hibernation.items.bed3.replace('{{name}}', name);
+        this.rooms.hibernation.items['bed 3'] = this.rooms.hibernation.items['bed 3'].replace('{{name}}', name);
         this.pushMessage('Welcome to Space Fear, ' + name + '. ' + this.sceneMessage());
       }
       else {
@@ -232,8 +232,9 @@ Terminal.prototype.processCommands = function() {
 
         case 'look':
           var room = this.rooms[this.player.room];
-          if (room.items[commands[1]]) {
-            this.pushMessage(room.items[commands[1]]);
+          var item = room.items[commands.slice(1).join(' ')];
+          if (item) {
+            this.pushMessage(item);
           }
           else {
             this.pushMessage(room.message());
