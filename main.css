@@ -1,7 +1,6 @@
 body {
   background-color: #060606;
   color: white;
-  cursor: none;
   font-family: monospace;
   font-size: 1.25em;
   margin: 0;
@@ -23,6 +22,7 @@ caption {
 
 canvas#main-viewport {
   background: transparent;
+  cursor: none;
   display: none;
   height: 600px;
   margin: 0 auto;
