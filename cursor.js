@@ -6,8 +6,8 @@ Cursor = function() {
   return this;
 }
 Cursor.prototype.move = function(event) {
-  this.x = event.offsetX - 6;
-  this.y = event.offsetY - 6;
+  this.x = event.offsetX;
+  this.y = event.offsetY;
 };
 Cursor.prototype.hoverOn = function() {
   this.color = CURSOR_HOVER;

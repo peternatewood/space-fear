@@ -80,8 +80,8 @@ Button.prototype.stopPulse = function() {
   clearInterval(this.pulseInterval);
 };
 Button.prototype.render = function(context) {
-  var x = this.x + (this.rad / 2);
-  var y = this.y + (this.rad / 2);
+  var x = this.x + this.rad;
+  var y = this.y + this.rad;
 
   context.fillStyle = 'slategray';
   context.beginPath();
