@@ -41,7 +41,7 @@ Terminal.prototype.handleInput = function(event) {
     this.restartCursorBlink();
     // Only allow printable characters
     if (/^.$/.test(event.key) && this.cursor < TERMINAL_MESSAGE_CHARS) {
-      this.buffer += event.key;
+      this.buffer = this.buffer.slice(0, this.cursor) + event.key + this.buffer.slice(this.cursor);
       this.cursor += 1;
     }
     else if (event.key == 'Backspace' && this.cursor > 0) {

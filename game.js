@@ -50,6 +50,7 @@ Game.prototype.destroy = function () {
   this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 };
 Game.prototype.handleKeyDown = function(event) {
+  // Handle only keys that are displayed on the keyboard
   var index = convertKeyToIndex(event.key.toUpperCase());
   if (index !== false) {
     // Don't prevent default if ctrl or alt are held down, to allow this.keyboard
