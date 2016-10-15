@@ -25,8 +25,8 @@ Keyboard = function(canvas) {
   x += MIN_KEY_SIZE + KEY_MARGIN;
   var w = MIN_KEY_SIZE;
   var h = (MIN_KEY_SIZE - KEY_MARGIN) / 2;
-  for(var index = 0; index < 4; index++) {
-    this.keys.push(new Key('', x, y, w, h));
+  ['up', 'left', 'down', 'right'].forEach(function(key, index) {
+    this.keys.push(new Key(key, x, y, w, h));
     if (index == 0) {
       y += (MIN_KEY_SIZE + KEY_MARGIN) / 2;
       x -= MIN_KEY_SIZE + KEY_MARGIN;
@@ -34,7 +34,7 @@ Keyboard = function(canvas) {
     else {
       x += MIN_KEY_SIZE + KEY_MARGIN;
     }
-  }
+  }, this);
   return this;
 }
 Keyboard.prototype.render = function(context) {

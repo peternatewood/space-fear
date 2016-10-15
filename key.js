@@ -115,13 +115,54 @@ Key.prototype.render = function(context) {
   context.fillRect(this.x + KEY_LINE_WIDTH, this.y + KEY_LINE_WIDTH, this.w - (2 * KEY_LINE_WIDTH), this.h - (2 * KEY_LINE_WIDTH));
 
   context.fillStyle = KEY_TEXT_COLOR;
-  if (this.key.length == 2) {
+  context.strokeStyle = KEY_TEXT_COLOR;
+  context.lineWidth = 2;
+  var x, y;
+  if (this.key == 'left') {
+    x = this.x + KEY_LINE_WIDTH + (MIN_KEY_SIZE / 2) - 4;
+    y = this.y + KEY_LINE_WIDTH + 0.5;
+    context.beginPath();
+    context.moveTo(x, y);
+    context.lineTo(x -= 4, y += 4);
+    context.lineTo(x += 4, y += 4);
+    context.stroke();
+  }
+  else if (this.key == 'up') {
+    x = this.x + KEY_LINE_WIDTH + (MIN_KEY_SIZE / 2) - 8;
+    y = this.y + KEY_LINE_WIDTH + 5.5;
+    context.beginPath();
+    context.moveTo(x, y);
+    context.lineTo(x += 4, y -= 4);
+    context.lineTo(x += 4, y += 4);
+    context.stroke();
+  }
+  else if (this.key == 'right') {
+    x = this.x + KEY_LINE_WIDTH + (MIN_KEY_SIZE / 2) - 4;
+    y = this.y + KEY_LINE_WIDTH + 0.5;
+    context.beginPath();
+    context.moveTo(x, y);
+    context.lineTo(x += 4, y += 4);
+    context.lineTo(x -= 4, y += 4);
+    context.stroke();
+  }
+  else if (this.key == 'down') {
+    x = this.x + KEY_LINE_WIDTH + (MIN_KEY_SIZE / 2) - 8;
+    y = this.y + KEY_LINE_WIDTH + 3.5;
+    context.beginPath();
+    context.moveTo(x, y);
+    context.lineTo(x += 4, y += 4);
+    context.lineTo(x += 4, y -= 4);
+    context.stroke();
+  }
+  else if (this.key.length == 2) {
+    context.lineWidth = 1;
     this.key.split('').forEach(function(char, index) {
       context.fillText(char, this.x + (MIN_KEY_SIZE / 4), this.y + ((index + 1) * KEY_TEXT_SIZE));
       context.strokeText(char, this.x + (MIN_KEY_SIZE / 4), this.y + ((index + 1) * KEY_TEXT_SIZE));
     }, this);
   }
   else {
+    context.lineWidth = 1;
     context.fillText(this.key, this.x + (MIN_KEY_SIZE / 4), this.y + (MIN_KEY_SIZE / 2));
     context.strokeText(this.key, this.x + (MIN_KEY_SIZE / 4), this.y + (MIN_KEY_SIZE / 2));
   }
