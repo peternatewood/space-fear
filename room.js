@@ -15,6 +15,42 @@ Room.prototype.itemMessage = function(name) {
   }
   return "There is no " + name + " here";
 };
+Room.prototype.openDoor = function(name) {
+  if (name) {
+    var roomName = name.toLowerCase();
+    var doorState = this.adjacents[roomName];
+    if (doorState) {
+      switch(doorState) {
+        case 'open':
+          return 'The door to ' + roomName + ' is already open';
+        case 'closed':
+          this.adjacents[roomName] = 'open';
+          return 'You opened the door to ' + roomName;
+        case 'locked':
+          return 'The door to ' + roomName + ' is locked';
+      }
+    }
+    return 'There is no door to ' + roomName;
+  }
+  return 'Please name the room whose door you want to open';
+};
+Room.prototype.closeDoor = function(name) {
+  if (name) {
+    var roomName = name.toLowerCase();
+    var doorState = this.adjacents[roomName];
+    if (doorState) {
+      switch(doorState) {
+        case 'open':
+          this.adjacents[roomName] = 'closed';
+          return 'You closed the door to ' + roomName;
+        case 'closed': case 'locked':
+          return 'The door to ' + roomName + ' is already closed';
+      }
+    }
+    return 'There is no door to ' + roomName;
+  }
+  return 'Please name the room whose door you want to close';
+};
 Room.prototype.setState = function(state) {
   if (state < this.messages.length && state >= 0) {
     this.state = state;
@@ -35,8 +71,8 @@ var ROOMS = [
       bed5: 'Bed 5: One of three beds along the long wall of hibernation. The name "Doctor Gustav Tanith" is written on the footboard.',
       bed6: 'Bed 6: One of three beds along the long wall of hibernation. The name "Biologist Asha Cansu" is written on the footboard.',
     },
-    adjacents: [
-      {name: 'hibernation_hall', state: 'closed'},
-    ],
+    adjacents: {
+      hibernation_hall: 'closed'
+    },
   }
 ];
