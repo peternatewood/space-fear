@@ -182,7 +182,12 @@ Terminal.prototype.processCommands = function() {
           break;
 
         case 'close':
-          this.pushMessage(this.rooms[this.player.room].closeDoor(commands.slice(1).join(' ')));
+          var name = commands.slice(1).join(' ');
+          if (this.rooms[name]) {
+            this.rooms[name].closeDoor(this.player.room);
+          }
+          this.pushMessage(this.rooms[this.player.room].closeDoor(name));
+          console.log(this.rooms);
           break;
 
         case 'color':
@@ -252,7 +257,12 @@ Terminal.prototype.processCommands = function() {
           break;
 
         case 'open':
-          this.pushMessage(this.rooms[this.player.room].openDoor(commands.slice(1).join(' ')));
+          var name = commands.slice(1).join(' ');
+          if (this.rooms[name]) {
+            this.rooms[name].openDoor(this.player.room);
+          }
+          this.pushMessage(this.rooms[this.player.room].openDoor(name));
+          console.log(this.rooms);
           break;
 
         default:
