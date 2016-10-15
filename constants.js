@@ -36,12 +36,14 @@ var SCENE_MESSAGES = [
 var DEFAULT_MESSAGE = "I don't understand. Type help for a list of commands";
 var VALID_COMMANDS = {
   clear: 'clear: Clear terminal messages from the monitor.',
+  close: 'close [room name]: Close a door to an adjacent room.',
   color: 'color [color name]: Change the color of the terminal text.',
   computer: "comp/computer [question]: Ask the computer a question. E.G. \"computer where am I?\"",
   help: "help [command]: Display all valid terminal commands. Specify a command to learn more about it. E.G. \"help computer\".",
   history: 'history [number]: List a number of previously entered commands.',
   look: 'look [object]: Look at the current room, or a specific object in the room.',
   map: "map [floor number]: Display the map of current floor. Specify a floor to see its map instead. E.G. \"map 2\".",
+  open: 'open [room name]: Open a door to an adjacent room.',
 }
 var getCommand = function(input) {
   if (typeof input == 'undefined') {
@@ -50,6 +52,8 @@ var getCommand = function(input) {
   switch(input.toLowerCase()) {
     case 'clear':
       return 'clear';
+    case 'close':
+      return 'close';
     case 'color':
       return 'color';
     case 'computer': case 'comp':
@@ -62,6 +66,8 @@ var getCommand = function(input) {
       return 'look';
     case 'map': case 'm':
       return 'map';
+    case 'open':
+      return 'open';
     default: return 'invalid';
   }
 }

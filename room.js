@@ -72,7 +72,7 @@ var ROOMS = [
       bed6: 'Bed 6: One of three beds along the long wall of hibernation. The name "Biologist Asha Cansu" is written on the footboard.',
     },
     adjacents: {
-      hibernation_hall: 'closed'
+      'hibernation access': 'closed'
     },
   }
 ];

@@ -14,16 +14,17 @@ Terminal = function() {
   this.messageInterval = false;
   this.color = WHITE;
   this.ascii = [];
-  this.currentFloor = 3;
+  this.inventory = [];
 
   this.computer = new Computer();
   this.save = new Save();
+  this.player = new Actor();
 
   this.restartCursorBlink();
 
   this.rooms = {}
   ROOMS.forEach(function(room) {
-    this.rooms[room.name] = new Room(room.messages, room.items);
+    this.rooms[room.name] = new Room(room.messages, room.items, room.adjacents);
   }, this);
 
   return this;
@@ -180,6 +181,10 @@ Terminal.prototype.processCommands = function() {
           this.message = [];
           break;
 
+        case 'close':
+          this.pushMessage(this.rooms[this.player.room].closeDoor(commands.slice(1).join(' ')));
+          break;
+
         case 'color':
           var message = 'Valid options include: default, crimson, lime, slateblue';
           if (VALID_COLORS.includes(commands[1])) {
@@ -226,13 +231,12 @@ Terminal.prototype.processCommands = function() {
           break;
 
         case 'look':
-          if (this.rooms[commands[1]]) {
-            if (this.rooms[commands[1]].items[commands[2]]) {
-              this.pushMessage(this.rooms[commands[1]].items[commands[2]]);
-            }
-            else {
-              this.pushMessage(this.rooms[commands[1]].message());
-            }
+          var room = this.rooms[this.player.room];
+          if (room.items[commands[1]]) {
+            this.pushMessage(room.items[commands[1]]);
+          }
+          else {
+            this.pushMessage(room.message());
           }
           break;
 
@@ -242,8 +246,12 @@ Terminal.prototype.processCommands = function() {
             this.ascii = map;
           }
           else {
-            this.ascii = ASCII['map' + this.currentFloor];
+            this.ascii = ASCII['map' + this.player.floor];
           }
+          break;
+
+        case 'open':
+          this.pushMessage(this.rooms[this.player.room].openDoor(commands.slice(1).join(' ')));
           break;
 
         default:
