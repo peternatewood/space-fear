@@ -75,5 +75,16 @@ var ROOMS = [
     adjacents: {
       'hibernation access': 'closed'
     },
-  }
+  },
+  {
+    name: 'hibernation access',
+    messages: [
+      'Hibernation Access: Hallway connecting hibernation to the rest of the station',
+    ],
+    items: {
+    },
+    adjacents: {
+      'hibernation': 'closed'
+    },
+  },
 ];
