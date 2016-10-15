@@ -26,12 +26,12 @@ Computer.prototype.handleHow = function(question) {
   return 'How question: ' + question;
 };
 Computer.prototype.handleWhat = function(question) {
-  if (question.includes('station')) {
-    return 'The deep space research station';
+  for (var prop in DESCRIPTIONS) {
+    if (DESCRIPTIONS.hasOwnProperty(prop) && question.includes(prop)) {
+      return DESCRIPTIONS[prop];
+    }
   }
-  else {
-    return "I'm afraid don't know anything about that";
-  }
+  return "I'm afraid don't know anything about that";
 };
 Computer.prototype.handleWhen = function(question) {
   return 'When question: ' + question;
@@ -45,7 +45,11 @@ Computer.prototype.handleWhere = function(question) {
 Computer.prototype.handleYesNo = function(question) {
   return 'Yes/no question: ' + question;
 };
+
 var QUESTION_TYPES = /who|how|what|when|why|where/;
 function capitalize(word) {
   return word[0].toUpperCase() + word.slice(1);
+}
+var DESCRIPTIONS = {
+  'station': 'The deep space research station',
 }
