@@ -1,5 +1,5 @@
 // Declare all classes here
-var Button, Computer, Cursor, Game, Key, Keyboard, Monitor, Room, Save, Terminal;
+var Actor, Button, Computer, Cursor, Game, Key, Keyboard, Monitor, Room, Save, Terminal;
 
 var MONITOR_TOP = 24;
 var MONITOR_MARGIN = 24;
