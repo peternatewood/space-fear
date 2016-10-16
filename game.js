@@ -51,7 +51,7 @@ Game.prototype.destroy = function () {
 };
 Game.prototype.handleKeyDown = function(event) {
   // Handle only keys that are displayed on the keyboard
-  var index = convertKeyToIndex(event.key.toUpperCase());
+  var index = convertKeyToIndex(crossGetKey(event).toUpperCase());
   if (index !== false) {
     // Don't prevent default if ctrl or alt are held down, to allow this.keyboard
     // shortcuts
@@ -69,7 +69,7 @@ Game.prototype.handleKeyDown = function(event) {
   }
 };
 Game.prototype.handleKeyUp = function(event) {
-  var index = convertKeyToIndex(event.key.toUpperCase());
+  var index = convertKeyToIndex(crossGetKey(event).toUpperCase());
   if (index !== false) {
     if (index.length > 1)
       index.forEach(function(i) {
