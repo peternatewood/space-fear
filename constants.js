@@ -142,32 +142,19 @@ var modHexColor = function(hex, mod) {
 }
 var convertKeyToIndex = function(key) {
   switch(key) {
-    case '~': return 0;
-    case '`': return 0;
-    case '!': return 1;
-    case '1': return 1;
-    case '@': return 2;
-    case '2': return 2;
-    case '#': return 3;
-    case '3': return 3;
-    case '$': return 4;
-    case '4': return 4;
-    case '%': return 5;
-    case '5': return 5;
-    case '^': return 6;
-    case '6': return 6;
-    case '&': return 7;
-    case '7': return 7;
-    case '*': return 8;
-    case '8': return 8;
-    case '(': return 9;
-    case '9': return 9;
-    case ')': return 10;
-    case '0': return 10;
-    case '_': return 11;
-    case '-': return 11;
-    case '+': return 12;
-    case '=': return 12;
+    case '~': case '`': return 0;
+    case '!': case '1': return 1;
+    case '@': case '2': return 2;
+    case '#': case '3': return 3;
+    case '$': case '4': return 4;
+    case '%': case '5': return 5;
+    case '^': case '6': return 6;
+    case '&': case '7': return 7;
+    case '*': case '8': return 8;
+    case '(': case '9': return 9;
+    case ')': case '0': return 10;
+    case '_': case '-': return 11;
+    case '+': case '=': return 12;
     case 'BACKSPACE': return 13;
     case 'TAB': return 14;
     case 'Q': return 15;
@@ -180,12 +167,9 @@ var convertKeyToIndex = function(key) {
     case 'I': return 22;
     case 'O': return 23;
     case 'P': return 24;
-    case '{': return 25;
-    case '[': return 25;
-    case '}': return 26;
-    case ']': return 26;
-    case '|': return 27;
-    case '\\': return 27;
+    case '{': case '[': return 25;
+    case '}': case ']': return 26;
+    case '|': case '\\': return 27;
     case 'CAPSLOCK': return 28;
     case 'A': return 29;
     case 'S': return 30;
@@ -196,10 +180,8 @@ var convertKeyToIndex = function(key) {
     case 'J': return 35;
     case 'K': return 36;
     case 'L': return 37;
-    case ':': return 38;
-    case ';': return 38;
-    case '"': return 39;
-    case '\'': return 39;
+    case ':': case ';': return 38;
+    case '"': case '\'': return 39;
     case 'ENTER': return 40;
     case 'SHIFT': return [41, 52];
     case 'Z': return 42;
@@ -209,12 +191,9 @@ var convertKeyToIndex = function(key) {
     case 'B': return 46;
     case 'N': return 47;
     case 'M': return 48;
-    case '<': return 49;
-    case ',': return 49;
-    case '>': return 50;
-    case '.': return 50;
-    case '?': return 51;
-    case '/': return 51;
+    case '<': case ',': return 49;
+    case '>': case '.': return 50;
+    case '?': case '/': return 51;
     case 'CONTROL': return [53, 58];
     case 'META': return 54;
     case 'ALT': return [55, 57];
@@ -224,6 +203,83 @@ var convertKeyToIndex = function(key) {
     case 'ARROWDOWN': return 61;
     case 'ARROWRIGHT': return 62;
     default: return false;
+  }
+}
+// Provide support for browsers without the keydown event "key" property
+// "cross" is short for cross-browser
+window.legacyModKeys = {
+  shift: false,
+  alt: false,
+  ctrl: false,
+  capslock: false,
+}
+window.crossGetKey = function(event) {
+  if (event.key) {
+    return event.key;
+  }
+  else {
+    // First handle all codes that correspond to ascii codes
+    if (event.keyCode >= 48 && event.keyCode <= 57) {
+      // Numerics
+      if (window.legacyModKeys.shift || window.legacyModKeys.capslock) {
+        switch(event.keyCode) {
+          case 48: return ')';
+          case 49: return '!';
+          case 50: return '@';
+          case 51: return '#';
+          case 52: return '$';
+          case 53: return '%';
+          case 54: return '^';
+          case 55: return '&';
+          case 56: return '*';
+          case 57: return '(';
+        }
+      }
+      return String.fromCharCode(event.keyCode);
+    }
+    else if (event.keyCode >= 65 && event.keyCode <= 90) {
+      // Alphas
+      return String.fromCharCode(event.keyCode + (window.legacyModKeys.shift || window.legacyModKeys.capslock ? 0 : 32));
+    }
+    // Now handle all the rest
+    switch(event.keyCode) {
+      // Printable keys
+      case 186: case 59: return window.legacyModKeys.shift || window.legacyModKeys.capslock ? ':' : ';';
+      case 187: case 61: return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '+' : '=';
+      case 188: return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '<' : ',';
+      case 189: case 173: return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '_' : '-';
+      case 190: return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '>' : '.';
+      case 191: return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '?' : '/';
+      case 192: return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '~' : '`';
+      case 219: return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '{' : '[';
+      case 220: return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '|' : '\\';
+      case 221: return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '}' : ']';
+      case 222: return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '"' : '\'';
+      // Modifiers
+      case 16: window.legacyModKeys.shift = event.type == 'keydown'; return 'Shift';
+      case 17: window.legacyModKeys.ctrl = event.type == 'keydown'; return 'Control';
+      case 18: window.legacyModKeys.alt = event.type == 'keydown'; return 'Alt';
+      case 20:
+        if (event.type == 'keydown') {
+          window.legacyModKeys.capslock = not(window.legacyModKeys.capslock);
+        }
+        return 'CapsLock';
+      // Non-printable
+      case 8: return 'Backspace';
+      case 9: return 'Tab';
+      case 13: return 'Enter';
+      case 27: return 'Escape';
+      case 32: return 'Space';
+      case 35: return 'End';
+      case 36: return 'Home';
+      case 37: return 'ArrowLeft';
+      case 38: return 'ArrowUp';
+      case 39: return 'ArrowRight';
+      case 40: return 'ArrowDown';
+      case 45: return 'Insert';
+      case 46: return 'Delete';
+      default: return '';
+    }
   }
 }
 
