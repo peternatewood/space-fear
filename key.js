@@ -22,7 +22,7 @@ Key = function(key, x, y, w, h) {
       case 'Backspace': add = 72; break;
       case 'Tab': add = 26; break;
       case '|\\': add = 46; break;
-      case 'CapsLk': add = 46; break;
+      case 'CapsLock': add = 46; break;
       case 'Enter': add = 64; break;
       case 'Shift': add = 74; break;
       case 'Ctrl': add = 18; break;
@@ -48,7 +48,28 @@ Key.prototype.activate = function() {
 };
 Key.prototype.deactivate = function() {
   this.pressed = false;
-}
+};
+Key.prototype.getKey = function(isKeyUp) {
+  if (not(this.disabled)) {
+    if (this.key == 'CapsLock' && isKeyUp) {
+      window.legacyModKeys.capslock = not(window.legacyModKeys.capslock);
+      this.pressed = window.legacyModKeys.capslock;
+    }
+    else if (this.key != 'CapsLock') {
+      this.pressed = not(isKeyUp);
+    }
+  }
+
+  if (this.key.length == 1) {
+    return window.legacyModKeys.capslock ? this.key : this.key.toLowerCase();
+  }
+  else if (this.key.length == 2) {
+    return window.legacyModKeys.capslock ? this.key[0] : this.key[1];
+  }
+  else {
+    return this.key;
+  }
+};
 Key.prototype.detectMouseOver = function(event, isKeyboard) {
   var prefix = isKeyboard ? 'keyboard' : '';
   if (event.offsetX < this[prefix + 'x']) {
@@ -64,13 +85,13 @@ Key.prototype.detectMouseOver = function(event, isKeyboard) {
     return false;
   }
   return true;
-}
-Key.prototype.updateMousePos = function(event) {
-  this.mousex = event.offsetX;
-  this.mousey = event.offsetY;
 };
-Key.prototype.grab = function(event) {
-  this.updateMousePos(event);
+Key.prototype.updateMousePos = function(cursor) {
+  this.mousex = cursor.x;
+  this.mousey = cursor.y;
+};
+Key.prototype.grab = function(cursor) {
+  this.updateMousePos(cursor);
   this.onKeyboard = false;
   this.moveInterval = setInterval(function() {
     var diffx = this.mousex - this.x - (this.w / 2);
@@ -79,9 +100,9 @@ Key.prototype.grab = function(event) {
     this.y += (diffy / 4);
   }.bind(this), KEY_MOVE_DELAY);
 };
-Key.prototype.release = function(event) {
+Key.prototype.release = function(cursor) {
   clearInterval(this.moveInterval);
-  if (this.detectMouseOver(event, true)) {
+  if (this.detectMouseOver({offsetX: cursor.x, offsetY: cursor.y}, true)) {
     this.x = this.keyboardx;
     this.y = this.keyboardy;
     this.onKeyboard = true;

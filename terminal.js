@@ -2,7 +2,7 @@ Terminal = function() {
   this.buffer = '';
   this.cursor = 0;
   this.showCursor = true;
-  this.allowInput = true;
+  this.allowInput = false;
   this.bufferLog = [];
   this.logOffset = 0;
   this.blinkInterval = 0;
@@ -87,6 +87,7 @@ Terminal.prototype.handleInput = function(event) {
       this.buffer = this.bufferLog[this.logOffset - 1];
       this.cursor = this.buffer.length;
     }
+    return key;
   }
 };
 Terminal.prototype.disableInput = function() {

@@ -4,6 +4,7 @@ Keyboard = function(canvas) {
   this.h = KEYBOARD_HEIGHT;
   this.w = KEYBOARD_WIDTH;
 
+  this.capslock = false;
   this.keys = [];
 
   var x = this.x + KEY_MARGIN + KEYBOARD_EDGE_WIDTH;
@@ -61,17 +62,15 @@ Keyboard.prototype.render = function(context) {
   context.lineWidth = 0.5;
   context.font = KEY_TEXT_SIZE + "px " + KEY_FONT;
 
-  var grabbedKeys = [];
+  var disabledKeys = [];
   this.keys.forEach(function(key) {
     if (key.onKeyboard) {
       key.render(context);
     }
     else {
-      grabbedKeys.push(key);
+      disabledKeys.push(key);
     }
   }, this);
 
-  grabbedKeys.forEach(function(key) {
-    key.render(context);
-  }, this);
+  return disabledKeys
 };

@@ -22,7 +22,7 @@ Monitor.prototype.destroy = function() {
   clearInterval(this.asciiInterval);
 };
 Monitor.prototype.allowInput = function() {
-  return this.powerButton.state == 'on';
+  return this.terminal.allowInput = this.powerButton.state == 'on';
 };
 Monitor.prototype.releaseButton = function(event) {
   switch(this.powerButton.release(event)) {
