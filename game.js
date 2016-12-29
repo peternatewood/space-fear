@@ -1,12 +1,12 @@
-Game = function() {
-  this.canvas = document.getElementById('main-viewport');
+var Game = new Object();
+Game.start = function() {
+  this.canvas = document.getElementById('main-viewport'),
+  this.cursor = new Cursor(),
+  this.showCursor = true,
+  this.animationFrame = 0,
   this.context = this.canvas.getContext('2d');
-
   this.keyboard = new Keyboard(this.canvas);
   this.monitor = new Monitor(this.canvas);
-  this.cursor = new Cursor();
-  this.showCursor = true;
-  this.animationFrame;
 
   document.addEventListener('keydown', this.handleKeyDown.bind(this));
   document.addEventListener('keyup', this.handleKeyUp.bind(this));
@@ -17,8 +17,7 @@ Game = function() {
   this.canvas.addEventListener('mouseout', function() {this.showCursor = false}.bind(this));
   this.canvas.addEventListener('mouseover', function() {this.showCursor = true}.bind(this));
   this.keyboard.keys[0].disabled = true;
-}
-Game.prototype.start = function() {
+
   function step(timestamp) {
     if (! start) var start = timestamp;
     var progress = timestamp - start;
@@ -39,7 +38,7 @@ Game.prototype.start = function() {
   }
   this.animationFrame = window.requestAnimationFrame(step.bind(this));
 };
-Game.prototype.destroy = function () {
+Game.destroy = function () {
   document.removeEventListener('keydown', this.handleKeyDown);
   document.removeEventListener('keyup', this.handleKeyUp);
 
@@ -53,7 +52,7 @@ Game.prototype.destroy = function () {
 
   this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 };
-Game.prototype.handleKeyDown = function(event) {
+Game.handleKeyDown = function(event) {
   // Handle only keys that are displayed on the keyboard
   var index = convertKeyToIndex(crossGetKey(event).toUpperCase());
   if (index !== false) {
@@ -72,7 +71,7 @@ Game.prototype.handleKeyDown = function(event) {
     }
   }
 };
-Game.prototype.handleKeyUp = function(event) {
+Game.handleKeyUp = function(event) {
   var index = convertKeyToIndex(crossGetKey(event).toUpperCase());
   if (index !== false) {
     if (index.length > 1)
@@ -84,7 +83,7 @@ Game.prototype.handleKeyUp = function(event) {
     }
   }
 };
-Game.prototype.handleMouseDown = function(event) {
+Game.handleMouseDown = function(event) {
   if (event.buttons == 1) {
     if (this.cursor.key) {
       var keyName = this.cursor.pressKey();
@@ -97,7 +96,7 @@ Game.prototype.handleMouseDown = function(event) {
     }
   }
 };
-Game.prototype.handleMouseMove = function(event) {
+Game.handleMouseMove = function(event) {
   this.cursor.move(event);
 
   if (not(this.cursor.isHoldingKey)) {
@@ -136,7 +135,7 @@ Game.prototype.handleMouseMove = function(event) {
     }
   }
 };
-Game.prototype.handleMouseUp = function(event) {
+Game.handleMouseUp = function(event) {
   if (this.cursor.key && this.cursor.key.disabled) {
     this.cursor.releaseKey();
   }
