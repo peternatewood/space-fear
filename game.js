@@ -101,7 +101,6 @@ function handleMouseUp(event) {
   }
 };
 
-// Game.start();
 document.addEventListener('keydown', handleKeyDown);
 document.addEventListener('keyup', handleKeyUp);
 
@@ -118,11 +117,9 @@ canvas.addEventListener('mouseover', function() {
 
 function step(timestamp) {
   context.clearRect(0, 0, SCREEN_W, SCREEN_H);
-  var disabledKeys = keyboard.render();
+  keyboard.render();
   monitor.render();
-  disabledKeys.forEach(function(key) {
-    key.render();
-  });
+
   if (showCursor) {
     cursor.render();
   }

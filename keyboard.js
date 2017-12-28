@@ -72,5 +72,8 @@ Keyboard.prototype.render = function() {
     }
   }, this);
 
-  return disabledKeys
+  // Render these later so they overlay the enabled keys
+  disabledKeys.forEach(function(key) {
+    key.render();
+  });
 };
