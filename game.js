@@ -61,7 +61,7 @@ Game.handleKeyDown = function(event) {
   if (index !== false) {
     // Don't prevent default if ctrl or alt are held down, to allow this.keyboard
     // shortcuts
-    if (! event.ctrlKey && ! event.altKey) event.preventDefault();
+    if (! event.altKey && ! event.ctrlKey && ! event.metaKey) event.preventDefault();
 
     this.monitor.terminal.handleInput(event);
 
