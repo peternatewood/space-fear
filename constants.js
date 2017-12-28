@@ -128,17 +128,19 @@ var modHexColor = function(hex, mod) {
   var mod = typeof mod == "number" ? mod : 2;
 
   if (/^#[\dA-F]{3}$/.test(hex)) {
-    hex.toUpperCase().slice(1).split('').forEach(function(val) {
-      var color = Math.round(parseInt('0x' + val + val, 16) * mod);
+    var rgb = hex.toUpperCase().slice(1).split('');
+    for (var i = 0; i < 3; i++) {
+      var color = Math.round(parseInt('0x' + rgb[i] + rgb[i], 16) * mod);
       colors.push(convertDecToHex(color < 255 ? color : 255));
-    });
+    }
     newHex = '#' + colors.join('');
   }
   else if (/^#[\dA-F]{6}$/.test(hex)) {
-    hex.toUpperCase().slice(1).match(/.{2}/g).forEach(function(val) {
-      var color = Math.round(parseInt('0x' + val, 16) * mod);
+    var rgb = hex.toUpperCase().slice(1).match(/.{2}/g);
+    for (var i = 0; i < 3; i++) {
+      var color = Math.round(parseInt('0x' + rgb[i], 16) * mod);
       colors.push(convertDecToHex(color < 255 ? color : 255));
-    });
+    };
     newHex = '#' + colors.join('');
   }
 

@@ -177,9 +177,8 @@ Key.prototype.render = function() {
   }
   else if (this.key.length == 2) {
     context.lineWidth = 1;
-    this.key.split('').forEach(function(char, index) {
-      context.fillText(char, this.x + (MIN_KEY_SIZE / 4), this.y + ((index + 1) * KEY_TEXT_SIZE));
-    }, this);
+    context.fillText(this.key[0], this.x + (MIN_KEY_SIZE / 4), this.y + KEY_TEXT_SIZE);
+    context.fillText(this.key[1], this.x + (MIN_KEY_SIZE / 4), this.y + 2 * KEY_TEXT_SIZE);
   }
   else {
     context.lineWidth = 1;

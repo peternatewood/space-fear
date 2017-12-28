@@ -22,10 +22,11 @@ Terminal = function() {
 
   this.restartCursorBlink();
 
-  this.rooms = {}
-  ROOMS.forEach(function(room) {
+  this.rooms = {};
+  for (var i = 0; i < ROOMS.length; i++) {
+    var room = ROOMS[i];
     this.rooms[room.name] = new Room(room.messages, room.items, room.adjacents);
-  }, this);
+  }
 
   return this;
 }
@@ -110,9 +111,10 @@ Terminal.prototype.readBuffer = function() {
 Terminal.prototype.startMessage = function() {
   this.messageEnd = 0;
   var messageLength = 0;
-  this.message[this.message.length - 1].split("\n").forEach(function(msg) {
-    messageLength += msg.length;
-  });
+  var splitMessage = this.message[this.message.length - 1].split("\n");
+  for (var i = 0; i < splitMessage.length; i++) {
+    messageLength += splitMessage[i].length;
+  }
 
   this.messageInterval = setInterval(function() {
     this.messageEnd++;

@@ -147,10 +147,10 @@ Monitor.prototype.renderAscii = function(context) {
   var x = this.x + MONITOR_MARGIN + MONITOR_PADDING;
   var y = this.y + MONITOR_MARGIN + MONITOR_PADDING + 8;
   if (this.terminal.ascii instanceof Array) {
-    this.terminal.ascii.forEach(function(line, index) {
-      context.fillText(line, x, y);
+    for (var row = 0; row < this.terminal.ascii.length; row++) {
+      context.fillText(this.terminal.ascii[row], x, y);
       y += KEY_TEXT_SIZE;
-    }, this);
+    }
   }
 };
 Monitor.prototype.startAsciiAnimation = function(name) {
