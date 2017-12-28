@@ -1,6 +1,6 @@
 var Game = new Object();
 Game.start = function() {
-  this.canvas = document.getElementById('main-viewport'),
+  this.canvas = document.getElementById('canvas'),
   this.cursor = new Cursor(),
   this.showCursor = true,
   this.animationFrame = 0,
@@ -147,3 +147,5 @@ Game.handleMouseUp = function(event) {
     this.cursor.releaseKey();
   }
 };
+
+Game.start();
