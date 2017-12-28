@@ -118,7 +118,7 @@ Key.prototype.release = function(cursor) {
     }.bind(this), KEY_MOVE_DELAY);
   }
 };
-Key.prototype.render = function(context) {
+Key.prototype.render = function() {
   context.fillStyle = this.pressed ? KEY_LIGHT_BORDER_COLOR : KEY_DARK_BORDER_COLOR;
   context.fillRect(this.x, this.y, this.w, this.h);
 

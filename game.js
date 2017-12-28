@@ -1,61 +1,11 @@
-var Game = new Object();
-Game.start = function() {
-  this.canvas = document.getElementById('canvas'),
-  this.cursor = new Cursor(),
-  this.showCursor = true,
-  this.animationFrame = 0,
-  this.context = this.canvas.getContext('2d');
-  this.keyboard = new Keyboard(this.canvas);
-  this.monitor = new Monitor(this.canvas);
+var canvas = document.getElementById('canvas');
+var cursor = new Cursor();
+var showCursor = true;
+var context = canvas.getContext('2d');
+var keyboard = new Keyboard(canvas);
+var monitor = new Monitor(canvas);
 
-  document.addEventListener('keydown', this.handleKeyDown.bind(this));
-  document.addEventListener('keyup', this.handleKeyUp.bind(this));
-
-  this.canvas.addEventListener('mousedown', this.handleMouseDown.bind(this));
-  this.canvas.addEventListener('mousemove', this.handleMouseMove.bind(this));
-  this.canvas.addEventListener('mouseup', this.handleMouseUp.bind(this));
-  this.canvas.addEventListener('mouseout', function() {this.showCursor = false}.bind(this));
-  this.canvas.addEventListener('mouseover', function() {this.showCursor = true}.bind(this));
-  this.keyboard.keys[0].disabled = true;
-
-  function step(timestamp) {
-    if (! start) var start = timestamp;
-    var progress = timestamp - start;
-
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    var disabledKeys = this.keyboard.render(this.context);
-    this.monitor.render(this.context);
-    disabledKeys.forEach(function(key) {
-      key.render(this.context);
-    }, this);
-    if (this.showCursor) {
-      this.cursor.render(this.context);
-    }
-
-    if (progress < 2000) {
-      this.animationFrame = window.requestAnimationFrame(step.bind(this));
-    }
-    else {
-      // Release keys, and other stuff?
-    }
-  }
-  this.animationFrame = window.requestAnimationFrame(step.bind(this));
-};
-Game.destroy = function () {
-  document.removeEventListener('keydown', this.handleKeyDown);
-  document.removeEventListener('keyup', this.handleKeyUp);
-
-  this.canvas.removeEventListener('mousedown', this.handleMouseDown);
-  this.canvas.removeEventListener('mousemove', this.handleMouseMove);
-  this.canvas.removeEventListener('mouseup', this.handleMouseUp);
-
-  this.monitor.destroy();
-
-  window.cancelAnimationFrame(this.animationFrame);
-
-  this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-};
-Game.handleKeyDown = function(event) {
+function handleKeyDown(event) {
   // Handle only keys that are displayed on the keyboard
   var index = convertKeyToIndex(crossGetKey(event).toUpperCase());
   if (index !== false) {
@@ -63,58 +13,58 @@ Game.handleKeyDown = function(event) {
     // shortcuts
     if (! event.altKey && ! event.ctrlKey && ! event.metaKey) event.preventDefault();
 
-    this.monitor.terminal.handleInput(event);
+    monitor.terminal.handleInput(event);
 
     if (index.length > 1)
       index.forEach(function(i) {
-        this.keyboard.keys[i].activate();
-      }, this);
+        keyboard.keys[i].activate();
+      });
     else {
-      this.keyboard.keys[index].activate();
+      keyboard.keys[index].activate();
     }
   }
 };
-Game.handleKeyUp = function(event) {
+function handleKeyUp(event) {
   var index = convertKeyToIndex(crossGetKey(event).toUpperCase());
   if (index !== false) {
     if (index.length > 1)
       index.forEach(function(i) {
-        this.keyboard.keys[i].deactivate();
-      }, this);
+        keyboard.keys[i].deactivate();
+      });
     else {
-      this.keyboard.keys[index].deactivate();
+      keyboard.keys[index].deactivate();
     }
   }
 };
-Game.handleMouseDown = function(event) {
+function handleMouseDown(event) {
   if (event.buttons == 1) {
-    if (this.cursor.key) {
-      var keyName = this.cursor.pressKey();
-      if (not(this.cursor.isHoldingKey)) {
-        this.monitor.terminal.handleInput({key: keyName});
+    if (cursor.key) {
+      var keyName = cursor.pressKey();
+      if (not(cursor.isHoldingKey)) {
+        monitor.terminal.handleInput({key: keyName});
       }
     }
-    else if (this.monitor.powerButton.detectMouseOver(event)) {
-      this.monitor.powerButton.press(event);
+    else if (monitor.powerButton.detectMouseOver(event)) {
+      monitor.powerButton.press(event);
     }
   }
 };
-Game.handleMouseMove = function(event) {
-  this.cursor.move(event);
+function handleMouseMove(event) {
+  cursor.move(event);
 
-  if (not(this.cursor.isHoldingKey)) {
+  if (not(cursor.isHoldingKey)) {
     var cursorNotOverKey = true;
     var key;
-    for (var index = 0; index < this.keyboard.keys.length; index++) {
-      key = this.keyboard.keys[index];
+    for (var index = 0; index < keyboard.keys.length; index++) {
+      key = keyboard.keys[index];
       if (key.detectMouseOver(event)) {
         window.crossGetKey(event);
-        if (this.cursor.key != key) {
+        if (cursor.key != key) {
           if (event.buttons == 1) {
-            this.cursor.releaseKey();
+            cursor.releaseKey();
           }
           else {
-            this.cursor.key = key;
+            cursor.key = key;
           }
         }
         cursorNotOverKey = false;
@@ -122,33 +72,65 @@ Game.handleMouseMove = function(event) {
       }
     }
     if (cursorNotOverKey) {
-      this.cursor.releaseKey();
-      this.cursor.key = null;
+      cursor.releaseKey();
+      cursor.key = null;
     }
   }
 
-  if (this.monitor.powerButton.detectMouseOver(event)) {
-    this.cursor.hoverOn();
+  if (monitor.powerButton.detectMouseOver(event)) {
+    cursor.hoverOn();
   }
   else {
-    this.cursor.hoverOff();
+    cursor.hoverOff();
 
-    if (this.monitor.powerButton.pressed) {
-      this.monitor.powerButton.pressed = false;
+    if (monitor.powerButton.pressed) {
+      monitor.powerButton.pressed = false;
     }
   }
 };
-Game.handleMouseUp = function(event) {
-  if (this.cursor.key && this.cursor.key.disabled) {
-    this.cursor.releaseKey();
+function handleMouseUp(event) {
+  if (cursor.key && cursor.key.disabled) {
+    cursor.releaseKey();
   }
-  else if (this.monitor.powerButton.pressed && this.monitor.powerButton.detectMouseOver(event)) {
-    this.monitor.releaseButton(event);
-    this.monitor.allowInput();
+  else if (monitor.powerButton.pressed && monitor.powerButton.detectMouseOver(event)) {
+    monitor.releaseButton(event);
+    monitor.allowInput();
   }
   else {
-    this.cursor.releaseKey();
+    cursor.releaseKey();
   }
 };
 
-Game.start();
+// Game.start();
+document.addEventListener('keydown', handleKeyDown);
+document.addEventListener('keyup', handleKeyUp);
+
+canvas.addEventListener('mousedown', handleMouseDown);
+canvas.addEventListener('mousemove', handleMouseMove);
+canvas.addEventListener('mouseup', handleMouseUp);
+canvas.addEventListener('mouseout', function() {
+  showCursor = false;
+});
+canvas.addEventListener('mouseover', function() {
+  showCursor = true;
+});
+// keyboard.keys[0].disabled = true;
+
+function step(timestamp) {
+  context.clearRect(0, 0, SCREEN_W, SCREEN_H);
+  var disabledKeys = keyboard.render();
+  monitor.render();
+  disabledKeys.forEach(function(key) {
+    key.render();
+  });
+  if (showCursor) {
+    cursor.render();
+  }
+
+  if (!start) { var start = timestamp; }
+  if (timestamp - start < 2000) { window.requestAnimationFrame(step); }
+  else {
+    // Release keys, and other stuff?
+  }
+}
+window.requestAnimationFrame(step);

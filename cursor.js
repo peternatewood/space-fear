@@ -45,7 +45,7 @@ Cursor.prototype.releaseKey = function() {
     return this.key.getKey(true);
   }
 };
-Cursor.prototype.render = function(context) {
+Cursor.prototype.render = function() {
   context.fillStyle = this.color;
 
   var x = this.x;

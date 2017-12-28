@@ -38,7 +38,7 @@ Keyboard = function(canvas) {
   }, this);
   return this;
 }
-Keyboard.prototype.render = function(context) {
+Keyboard.prototype.render = function() {
   var edge = KEYBOARD_EDGE_WIDTH;
 
   context.fillStyle = KEY_DARK_BORDER_COLOR;
@@ -65,7 +65,7 @@ Keyboard.prototype.render = function(context) {
   var disabledKeys = [];
   this.keys.forEach(function(key) {
     if (key.onKeyboard) {
-      key.render(context);
+      key.render();
     }
     else {
       disabledKeys.push(key);

@@ -34,7 +34,7 @@ Monitor.prototype.releaseButton = function(event) {
       break;
   }
 };
-Monitor.prototype.render = function(context) {
+Monitor.prototype.render = function() {
   var x, y;
   // Render monitor
   context.fillStyle = MONITOR_COLOR;

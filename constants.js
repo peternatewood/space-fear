@@ -1,6 +1,9 @@
 // Declare all classes here
 var Actor, Button, Computer, Cursor, Game, Key, Keyboard, Monitor, Room, Save, Terminal;
 
+const SCREEN_W = 1280;
+const SCREEN_H = 600;
+
 const MONITOR_TOP = 24;
 const MONITOR_MARGIN = 24;
 const MONITOR_PADDING = 12;
