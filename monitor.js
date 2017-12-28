@@ -101,6 +101,7 @@ Monitor.prototype.render = function(context) {
   context.fillRect(this.x + MONITOR_MARGIN + 4, this.y + MONITOR_MARGIN + 4, this.w - (2 * MONITOR_MARGIN) - 8, this.h - (2 * MONITOR_MARGIN) - 8);
 };
 Monitor.prototype.renderTerminal = function(context) {
+  context.font = TERMINAL_FONT;
   context.fillStyle = this.terminal.color;
   context.fillText('> ' + this.terminal.buffer, this.x + MONITOR_MARGIN + MONITOR_PADDING, this.y + this.h - (MONITOR_MARGIN + MONITOR_PADDING));
 

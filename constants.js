@@ -27,6 +27,7 @@ const POWER_OFF_COLOR = '#441010';
 const CURSOR_BLINK_DELAY = 680;
 const TERMINAL_MESSAGE_ROWS = 17;
 const TERMINAL_MESSAGE_CHARS = 49;
+const TERMINAL_FONT = '14px Courier, monospace';
 const MESSAGE_DELAY = 50;
 
 const SCENE_MESSAGES = [
@@ -87,7 +88,7 @@ const KEY_TEXT_COLOR = "#000";
 const KEY_LIGHT_BORDER_COLOR = "#AA5";
 const KEY_DARK_BORDER_COLOR = "#663";
 
-const KEY_FONT = "Courier";
+const KEY_FONT = "12px Helvetica, sans-serif";
 
 const KEYBOARD_KEYS = [
   ['~`', '!1', '@2', '#3', '$4', '%5', '^6', '&7', '*8', '(9', ')0', '_-', '+=', 'Backspace'],

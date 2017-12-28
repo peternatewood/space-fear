@@ -60,7 +60,7 @@ Keyboard.prototype.render = function(context) {
   context.fillStyle = KEY_TEXT_COLOR;
   context.strokeStyle = KEY_TEXT_COLOR;
   context.lineWidth = 0.5;
-  context.font = KEY_TEXT_SIZE + "px " + KEY_FONT;
+  context.font = KEY_FONT;
 
   var disabledKeys = [];
   this.keys.forEach(function(key) {
