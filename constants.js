@@ -1,40 +1,40 @@
 // Declare all classes here
 var Actor, Button, Computer, Cursor, Game, Key, Keyboard, Monitor, Room, Save, Terminal;
 
-var MONITOR_TOP = 24;
-var MONITOR_MARGIN = 24;
-var MONITOR_PADDING = 12;
-var MONITOR_HEIGHT = 320;
-var MONITOR_WIDTH = 480;
-var MONITOR_BOOT_STEPS = 360;
+const MONITOR_TOP = 24;
+const MONITOR_MARGIN = 24;
+const MONITOR_PADDING = 12;
+const MONITOR_HEIGHT = 320;
+const MONITOR_WIDTH = 480;
+const MONITOR_BOOT_STEPS = 360;
 
-var POWER_BUTTON_SIZE = 16;
-var BUTTON_PULSE_DELAY = 270;
+const POWER_BUTTON_SIZE = 16;
+const BUTTON_PULSE_DELAY = 270;
 
-var BLACK = '#060606';
-var WHITE = '#E7E7E7';
+const BLACK = '#060606';
+const WHITE = '#E7E7E7';
 
-var CURSOR_OUTLINE = '#062606';
-var CURSOR_HOVER = '#08E708';
+const CURSOR_OUTLINE = '#062606';
+const CURSOR_HOVER = '#08E708';
 
-var MONITOR_COLOR = '#553';
-var MONITOR_MEDIUM_COLOR = '#332';
-var MONITOR_DARK_COLOR = '#26261A';
-var POWER_COLOR = '#811';
-var POWER_PRESSED_COLOR = '#F00';
-var POWER_OFF_COLOR = '#441010';
+const MONITOR_COLOR = '#553';
+const MONITOR_MEDIUM_COLOR = '#332';
+const MONITOR_DARK_COLOR = '#26261A';
+const POWER_COLOR = '#811';
+const POWER_PRESSED_COLOR = '#F00';
+const POWER_OFF_COLOR = '#441010';
 
-var CURSOR_BLINK_DELAY = 680;
-var TERMINAL_MESSAGE_ROWS = 17;
-var TERMINAL_MESSAGE_CHARS = 49;
-var MESSAGE_DELAY = 50;
+const CURSOR_BLINK_DELAY = 680;
+const TERMINAL_MESSAGE_ROWS = 17;
+const TERMINAL_MESSAGE_CHARS = 49;
+const MESSAGE_DELAY = 50;
 
-var SCENE_MESSAGES = [
+const SCENE_MESSAGES = [
   'Please enter your name',
   'Interact solely through the keyboard. Your progress is automatically preserved and will be restored on future sessions. You are an engineer working onboard a deep space research station. You begin in the hibernation center. You have awoken after a normal eight hours of sleep.',
 ];
-var DEFAULT_MESSAGE = "I don't understand. Type help for a list of commands";
-var VALID_COMMANDS = {
+const DEFAULT_MESSAGE = "I don't understand. Type help for a list of commands";
+const VALID_COMMANDS = {
   clear: 'clear: Clear terminal messages from the monitor.',
   close: 'close [room name]: Close a door to an adjacent room.',
   color: 'color [color name]: Change the color of the terminal text.',
@@ -72,24 +72,24 @@ var getCommand = function(input) {
   }
 }
 
-var KEY_LINE_WIDTH = 4;
-var KEY_MARGIN = 2;
-var MIN_KEY_SIZE = 36;
-var KEY_TEXT_SIZE = 14;
-var KEY_MOVE_DELAY = 10;
+const KEY_LINE_WIDTH = 4;
+const KEY_MARGIN = 2;
+const MIN_KEY_SIZE = 36;
+const KEY_TEXT_SIZE = 14;
+const KEY_MOVE_DELAY = 10;
 
-var KEYBOARD_HEIGHT = 216;
-var KEYBOARD_WIDTH = 630;
-var KEYBOARD_EDGE_WIDTH = 12;
+const KEYBOARD_HEIGHT = 216;
+const KEYBOARD_WIDTH = 630;
+const KEYBOARD_EDGE_WIDTH = 12;
 
-var KEY_COLOR = "#994"
-var KEY_TEXT_COLOR = "#000";
-var KEY_LIGHT_BORDER_COLOR = "#AA5";
-var KEY_DARK_BORDER_COLOR = "#663";
+const KEY_COLOR = "#994"
+const KEY_TEXT_COLOR = "#000";
+const KEY_LIGHT_BORDER_COLOR = "#AA5";
+const KEY_DARK_BORDER_COLOR = "#663";
 
-var KEY_FONT = "Courier";
+const KEY_FONT = "Courier";
 
-var KEYBOARD_KEYS = [
+const KEYBOARD_KEYS = [
   ['~`', '!1', '@2', '#3', '$4', '%5', '^6', '&7', '*8', '(9', ')0', '_-', '+=', 'Backspace'],
   ['Tab', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{[', '}]', '|\\'],
   ['CapsLock', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':;', '"\'', 'Enter'],
@@ -142,67 +142,68 @@ var modHexColor = function(hex, mod) {
 }
 var convertKeyToIndex = function(key) {
   switch(key) {
-    case '~': case '`': return 0;
-    case '!': case '1': return 1;
-    case '@': case '2': return 2;
-    case '#': case '3': return 3;
-    case '$': case '4': return 4;
-    case '%': case '5': return 5;
-    case '^': case '6': return 6;
-    case '&': case '7': return 7;
-    case '*': case '8': return 8;
-    case '(': case '9': return 9;
-    case ')': case '0': return 10;
-    case '_': case '-': return 11;
-    case '+': case '=': return 12;
-    case 'BACKSPACE': return 13;
-    case 'TAB': return 14;
-    case 'Q': return 15;
-    case 'W': return 16;
-    case 'E': return 17;
-    case 'R': return 18;
-    case 'T': return 19;
-    case 'Y': return 20;
-    case 'U': return 21;
-    case 'I': return 22;
-    case 'O': return 23;
-    case 'P': return 24;
-    case '{': case '[': return 25;
-    case '}': case ']': return 26;
-    case '|': case '\\': return 27;
-    case 'CAPSLOCK': return 28;
-    case 'A': return 29;
-    case 'S': return 30;
-    case 'D': return 31;
-    case 'F': return 32;
-    case 'G': return 33;
-    case 'H': return 34;
-    case 'J': return 35;
-    case 'K': return 36;
-    case 'L': return 37;
-    case ':': case ';': return 38;
-    case '"': case '\'': return 39;
-    case 'ENTER': return 40;
-    case 'SHIFT': return [41, 52];
-    case 'Z': return 42;
-    case 'X': return 43;
-    case 'C': return 44;
-    case 'V': return 45;
-    case 'B': return 46;
-    case 'N': return 47;
-    case 'M': return 48;
-    case '<': case ',': return 49;
-    case '>': case '.': return 50;
-    case '?': case '/': return 51;
-    case 'CONTROL': return [53, 58];
-    case 'META': return 54;
-    case 'ALT': return [55, 57];
-    case ' ': return 56;
-    case 'ARROWUP': return 59;
-    case 'ARROWLEFT': return 60;
-    case 'ARROWDOWN': return 61;
-    case 'ARROWRIGHT': return 62;
-    default: return false;
+    case '~': case '`'  : return  0;
+    case '!': case '1'  : return  1;
+    case '@': case '2'  : return  2;
+    case '#': case '3'  : return  3;
+    case '$': case '4'  : return  4;
+    case '%': case '5'  : return  5;
+    case '^': case '6'  : return  6;
+    case '&': case '7'  : return  7;
+    case '*': case '8'  : return  8;
+    case '(': case '9'  : return  9;
+    case ')': case '0'  : return 10;
+    case '_': case '-'  : return 11;
+    case '+': case '='  : return 12;
+    case 'BACKSPACE'    : return 13;
+    case 'TAB'          : return 14;
+    case 'Q'            : return 15;
+    case 'W'            : return 16;
+    case 'E'            : return 17;
+    case 'R'            : return 18;
+    case 'T'            : return 19;
+    case 'Y'            : return 20;
+    case 'U'            : return 21;
+    case 'I'            : return 22;
+    case 'O'            : return 23;
+    case 'P'            : return 24;
+    case '{': case '['  : return 25;
+    case '}': case ']'  : return 26;
+    case '|': case '\\' : return 27;
+    case 'CAPSLOCK'     : return 28;
+    case 'A'            : return 29;
+    case 'S'            : return 30;
+    case 'D'            : return 31;
+    case 'F'            : return 32;
+    case 'G'            : return 33;
+    case 'H'            : return 34;
+    case 'J'            : return 35;
+    case 'K'            : return 36;
+    case 'L'            : return 37;
+    case ':': case ';'  : return 38;
+    case '"': case '\'' : return 39;
+    case 'ENTER'        : return 40;
+    case 'SHIFT'        : return [41, 52];
+    case 'Z'            : return 42;
+    case 'X'            : return 43;
+    case 'C'            : return 44;
+    case 'V'            : return 45;
+    case 'B'            : return 46;
+    case 'N'            : return 47;
+    case 'M'            : return 48;
+    case '<': case ','  : return 49;
+    case '>': case '.'  : return 50;
+    case '?': case '/'  : return 51;
+    case 'CONTROL'      : return [53, 58];
+    case 'META'         : return 54;
+    case 'ALT'          : return [55, 57];
+    case ' '            : return 56;
+    case 'ARROWUP'      : return 59;
+    case 'ARROWLEFT'    : return 60;
+    case 'ARROWDOWN'    : return 61;
+    case 'ARROWRIGHT'   : return 62;
+    default:
+      return false;
   }
 }
 // Provide support for browsers without the keydown event "key" property
@@ -244,29 +245,29 @@ window.crossGetKey = function(event) {
     // Now handle all the rest
     switch(event.keyCode) {
       // Printable keys
-      case 186: case 59: return window.legacyModKeys.shift || window.legacyModKeys.capslock ? ':' : ';';
-      case 187: case 61: return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '+' : '=';
-      case 188: return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '<' : ',';
+      case 186: case  59: return window.legacyModKeys.shift || window.legacyModKeys.capslock ? ':' : ';';
+      case 187: case  61: return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '+' : '=';
+      case 188          : return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '<' : ',';
       case 189: case 173: return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '_' : '-';
-      case 190: return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '>' : '.';
-      case 191: return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '?' : '/';
-      case 192: return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '~' : '`';
-      case 219: return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '{' : '[';
-      case 220: return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '|' : '\\';
-      case 221: return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '}' : ']';
-      case 222: return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '"' : '\'';
+      case 190          : return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '>' : '.';
+      case 191          : return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '?' : '/';
+      case 192          : return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '~' : '`';
+      case 219          : return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '{' : '[';
+      case 220          : return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '|' : '\\';
+      case 221          : return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '}' : ']';
+      case 222          : return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '"' : '\'';
       // Modifiers
       case 16: window.legacyModKeys.shift = event.type == 'keydown'; return 'Shift';
-      case 17: window.legacyModKeys.ctrl = event.type == 'keydown'; return 'Control';
-      case 18: window.legacyModKeys.alt = event.type == 'keydown'; return 'Alt';
+      case 17: window.legacyModKeys.ctrl  = event.type == 'keydown'; return 'Control';
+      case 18: window.legacyModKeys.alt   = event.type == 'keydown'; return 'Alt';
       case 20:
         if (event.type == 'keydown') {
           window.legacyModKeys.capslock = not(window.legacyModKeys.capslock);
         }
         return 'CapsLock';
       // Non-printable
-      case 8: return 'Backspace';
-      case 9: return 'Tab';
+      case  8: return 'Backspace';
+      case  9: return 'Tab';
       case 13: return 'Enter';
       case 27: return 'Escape';
       case 32: return 'Space';
@@ -278,12 +279,13 @@ window.crossGetKey = function(event) {
       case 40: return 'ArrowDown';
       case 45: return 'Insert';
       case 46: return 'Delete';
-      default: return '';
+      default:
+        return '';
     }
   }
 }
 
-var VALID_COLORS = [
+const VALID_COLORS = [
   'default',
   'silver',
   'gray',

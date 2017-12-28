@@ -35,6 +35,9 @@ Game.start = function() {
     if (progress < 2000) {
       this.animationFrame = window.requestAnimationFrame(step.bind(this));
     }
+    else {
+      // Release keys, and other stuff?
+    }
   }
   this.animationFrame = window.requestAnimationFrame(step.bind(this));
 };
