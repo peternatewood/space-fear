@@ -11,31 +11,36 @@ Keyboard = function(canvas) {
   var y = this.y + KEY_MARGIN + KEYBOARD_EDGE_WIDTH;
   var keyWidth;
 
-  KEYBOARD_KEYS.forEach(function(row, index) {
-    x = this.x + KEY_MARGIN + KEYBOARD_EDGE_WIDTH;
-    row.forEach(function(key) {
-      this.keys.push(new Key(key, x, y));
-
+  var keyCount = 0;
+  for (var r = 0; r < KEYBOARD_KEYS.length; r++) {
+    for (var c = 0; c < KEYBOARD_KEYS[r].length; c++) {
+      keyCount++;
+      this.keys.push(new Key(KEYBOARD_KEYS[r][c], x, y));
       x += this.keys[this.keys.length - 1].w + KEY_MARGIN;
-    }, this);
-    if (index < KEYBOARD_KEYS.length - 1) {
+    }
+    if (r < KEYBOARD_KEYS.length - 1) {
+      x = this.x + KEY_MARGIN + KEYBOARD_EDGE_WIDTH;
       y += MIN_KEY_SIZE + KEY_MARGIN;
     }
-  }, this);
+  }
 
   x += MIN_KEY_SIZE + KEY_MARGIN;
   var w = MIN_KEY_SIZE;
   var h = (MIN_KEY_SIZE - KEY_MARGIN) / 2;
-  ['up', 'left', 'down', 'right'].forEach(function(key, index) {
-    this.keys.push(new Key(key, x, y, w, h));
-    if (index == 0) {
+  var arrows = ['up', 'left', 'down', 'right'];
+  for (var i = 0; i < 4; i++) {
+    this.keys.push(new Key(arrows[i], x, y, w, h));
+    if (i == 0) {
       y += (MIN_KEY_SIZE + KEY_MARGIN) / 2;
       x -= MIN_KEY_SIZE + KEY_MARGIN;
     }
     else {
       x += MIN_KEY_SIZE + KEY_MARGIN;
     }
-  }, this);
+  }
+
+  this.keyCount = keyCount + 4;
+
   return this;
 }
 Keyboard.prototype.render = function() {
@@ -62,18 +67,19 @@ Keyboard.prototype.render = function() {
   context.lineWidth = 0.5;
   context.font = KEY_FONT;
 
-  var disabledKeys = [];
-  this.keys.forEach(function(key) {
+  var disabledKeys = new Array(this.keyCount);
+  for (var i = 0; i < this.keyCount; i++) {
+    var key = this.keys[i];
+    disabledKeys[i] = !key.onKeyboard;
     if (key.onKeyboard) {
       key.render();
     }
-    else {
-      disabledKeys.push(key);
-    }
-  }, this);
+  }
 
   // Render these later so they overlay the enabled keys
-  disabledKeys.forEach(function(key) {
-    key.render();
-  });
+  for (var i = 0; i < this.keyCount; i++) {
+    if (disabledKeys[i]) {
+      this.keys[i].render();
+    }
+  }
 };
