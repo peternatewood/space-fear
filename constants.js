@@ -1,5 +1,5 @@
 // Declare all classes here
-var Actor, Computer, Key, Room, Save;
+var Actor, Computer, Key, Room;
 
 const SCREEN_W = 1280;
 const SCREEN_H = 600;

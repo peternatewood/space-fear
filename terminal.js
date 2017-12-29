@@ -17,7 +17,6 @@ var terminal = {
   inventory: [],
 
   computer: new Computer(),
-  save: new Save(),
   player: new Actor(),
   rooms: new Array(ROOMS.length),
 };
@@ -118,7 +117,8 @@ function processCommands() {
     case 0:
       var name = terminal.bufferLog[0].trim();
       if (/\S+/.test(name)) {
-        terminal.save.save({name: name});
+        save.name = name;
+        saveData();
         terminal.scene = 1;
         terminal.rooms.hibernation.items['bed 3'] = terminal.rooms.hibernation.items['bed 3'].replace('{{name}}', name);
         pushMessage('Welcome to Space Fear, ' + name + '. ' + getSceneMessage());
