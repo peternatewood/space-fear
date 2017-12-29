@@ -1,61 +1,64 @@
-Cursor = function() {
-  this.x = 0;
-  this.y = 0;
-  this.color = WHITE;
-  this.key;
-  this.isHoldingKey = false;
+var cursor = {
+  x: 0,
+  y: 0,
+  color: WHITE,
+  key: null,
+  isHoldingKey: false
+};
 
-  return this;
+function setCursorPosition(e) {
+  var rect = e.target.getBoundingClientRect();
+  cursor.x = e.clientX - rect.x;
+  cursor.y = e.clientY - rect.y;
+
+  if (cursor.key && cursor.isHoldingKey) {
+    cursor.key.updateMousePos(cursor);
+  }
 }
-Cursor.prototype.move = function(event) {
-  this.x = event.offsetX;
-  this.y = event.offsetY;
 
-  if (this.key && this.isHoldingKey) {
-    this.key.updateMousePos(this);
+function toggleCursorHover(hoverOn) {
+  if (typeof hoverOn === 'boolean') {
+    cursor.color = hoverOn ? CURSOR_HOVER : WHITE;
   }
-};
-Cursor.prototype.hoverOn = function() {
-  this.color = CURSOR_HOVER;
-};
-Cursor.prototype.hoverOff = function() {
-  this.color = WHITE;
-};
-Cursor.prototype.pressKey = function() {
-  if (this.key) {
-    if (this.key.disabled && not(this.isHoldingKey)) {
-      this.key.grab(this);
-      this.isHoldingKey = true;
+}
+
+function pressCursorKey() {
+  if (cursor.key) {
+    if (cursor.key.disabled && not(cursor.isHoldingKey)) {
+      cursor.key.grab(cursor);
+      cursor.isHoldingKey = true;
     }
     else {
-      this.key.activate();
+      cursor.key.activate();
     }
-    return this.key.getKey(false);
+    return cursor.key.getKey(false);
   }
 };
-Cursor.prototype.releaseKey = function() {
-  if (this.key) {
-    if (this.key.disabled && this.isHoldingKey) {
-      this.key.release(this);
-      this.isHoldingKey = false;
+
+function releaseCursorKey() {
+  if (cursor.key) {
+    if (cursor.key.disabled && cursor.isHoldingKey) {
+      cursor.key.release(cursor);
+      cursor.isHoldingKey = false;
     }
     else {
-      this.key.deactivate();
+      cursor.key.deactivate();
     }
-    return this.key.getKey(true);
+    return cursor.key.getKey(true);
   }
-};
-Cursor.prototype.render = function() {
-  context.fillStyle = this.color;
+}
 
-  var x = this.x;
-  var y = this.y;
+function renderCursor() {
+  context.fillStyle = cursor.color;
+
+  var x = cursor.x;
+  var y = cursor.y;
 
   context.beginPath();
   context.moveTo(x, y);
   context.lineTo(x += 13, y += 13);
   context.lineTo(x -= 8, y);
-  context.lineTo(this.x, this.y + 19);
+  context.lineTo(cursor.x, cursor.y + 19);
   context.closePath();
 
   context.fill();

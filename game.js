@@ -1,5 +1,4 @@
 var canvas = document.getElementById('canvas');
-var cursor = new Cursor();
 var showCursor = true;
 var context = canvas.getContext('2d');
 var keyboard = new Keyboard(canvas);
@@ -39,7 +38,7 @@ function handleKeyUp(event) {
 function handleMouseDown(event) {
   if (event.buttons == 1) {
     if (cursor.key) {
-      var keyName = cursor.pressKey();
+      var keyName = pressCursorKey();
       if (not(cursor.isHoldingKey)) {
         monitor.terminal.handleInput({key: keyName});
       }
@@ -50,7 +49,7 @@ function handleMouseDown(event) {
   }
 };
 function handleMouseMove(event) {
-  cursor.move(event);
+  setCursorPosition(event);
 
   if (not(cursor.isHoldingKey)) {
     var cursorNotOverKey = true;
@@ -61,7 +60,7 @@ function handleMouseMove(event) {
         window.crossGetKey(event);
         if (cursor.key != key) {
           if (event.buttons == 1) {
-            cursor.releaseKey();
+            releaseCursorKey();
           }
           else {
             cursor.key = key;
@@ -72,16 +71,16 @@ function handleMouseMove(event) {
       }
     }
     if (cursorNotOverKey) {
-      cursor.releaseKey();
+      releaseCursorKey();
       cursor.key = null;
     }
   }
 
   if (isMouseOverButton(event, powerButton)) {
-    cursor.hoverOn();
+    toggleCursorHover(true);
   }
   else {
-    cursor.hoverOff();
+    toggleCursorHover(false);
 
     if (powerButton.pressed) {
       powerButton.pressed = false;
@@ -90,14 +89,14 @@ function handleMouseMove(event) {
 };
 function handleMouseUp(event) {
   if (cursor.key && cursor.key.disabled) {
-    cursor.releaseKey();
+    releaseCursorKey()
   }
   else if (powerButton.pressed && isMouseOverButton(event, powerButton)) {
     monitor.releaseButton(event);
     monitor.allowInput();
   }
   else {
-    cursor.releaseKey();
+    releaseCursorKey()
   }
 };
 
@@ -121,7 +120,7 @@ function step(timestamp) {
   monitor.render();
 
   if (showCursor) {
-    cursor.render();
+    renderCursor();
   }
 
   if (!start) { var start = timestamp; }
