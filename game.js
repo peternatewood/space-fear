@@ -2,7 +2,6 @@ var canvas = document.getElementById('canvas');
 var showCursor = true;
 var context = canvas.getContext('2d');
 var keyboard = new Keyboard(canvas);
-var monitor = new Monitor(canvas);
 
 function handleKeyDown(event) {
   // Handle only keys that are displayed on the keyboard
@@ -92,8 +91,13 @@ function handleMouseUp(event) {
     releaseCursorKey()
   }
   else if (powerButton.pressed && isMouseOverButton(event, powerButton)) {
-    monitor.releaseButton(event);
-    monitor.allowInput();
+    cycleButtonState(powerButton);
+    switch (powerButton.state) {
+      case 'on' : startBootUp(); break;
+      case 'off': startBootDown(); break;
+      // Render standby?
+    }
+    allowInput(monitor.terminal);
   }
   else {
     releaseCursorKey()
@@ -117,7 +121,7 @@ canvas.addEventListener('mouseover', function() {
 function step(timestamp) {
   context.clearRect(0, 0, SCREEN_W, SCREEN_H);
   keyboard.render();
-  monitor.render();
+  renderMonitor();
 
   if (showCursor) {
     renderCursor();

@@ -1,126 +1,122 @@
-Monitor = function(canvas) {
-  this.x = (canvas.width / 2) - (MONITOR_WIDTH / 2);
-  this.y = MONITOR_TOP;
-  this.w = MONITOR_WIDTH;
-  this.h = MONITOR_HEIGHT;
+var monitor = {
+  x: (canvas.width / 2) - (MONITOR_WIDTH / 2),
+  y: MONITOR_TOP,
+  w: MONITOR_WIDTH,
+  h: MONITOR_HEIGHT,
+  terminal: new Terminal,
+  booting: 'none',
+  bootStep: MONITOR_BOOT_STEPS,
+  bootInterval: 0,
+  asciiInterval: 0
+};
 
-  this.terminal = new Terminal;
-  this.booting = 'none';
-  this.bootStep = MONITOR_BOOT_STEPS;
-  this.bootInterval;
-
-  this.asciiInterval;
-
-  return this;
+function allowInput(terminal) {
+  return terminal.allowInput = powerButton.state === 'on';
 }
-Monitor.prototype.allowInput = function() {
-  return this.terminal.allowInput = powerButton.state === 'on';
-};
-Monitor.prototype.releaseButton = function(event) {
-  cycleButtonState(powerButton);
-  switch (powerButton.state) {
-    case 'on':
-      this.renderBoot();
-      break;
-    case 'off':
-      this.renderBootDown();
-      break;
-  }
-};
-Monitor.prototype.render = function() {
+
+function renderMonitor() {
   var x, y;
   // Render monitor
   context.fillStyle = MONITOR_COLOR;
-  context.fillRect(this.x, this.y, this.w, this.h);
+  context.fillRect(monitor.x, monitor.y, monitor.w, monitor.h);
 
   context.fillStyle = MONITOR_MEDIUM_COLOR;
   context.beginPath();
-  context.moveTo(this.x, this.y);
-  context.lineTo(this.x + this.w, this.y);
-  context.lineTo(this.x + this.w - (2 * MONITOR_MARGIN), this.y + (2 * MONITOR_MARGIN));
-  context.lineTo(this.x + (2 * MONITOR_MARGIN), this.y + this.h - (2 * MONITOR_MARGIN));
-  context.lineTo(this.x, this.y + this.h);
+  context.moveTo(monitor.x, monitor.y);
+  context.lineTo(monitor.x + monitor.w, monitor.y);
+  context.lineTo(monitor.x + monitor.w - (2 * MONITOR_MARGIN), monitor.y + (2 * MONITOR_MARGIN));
+  context.lineTo(monitor.x + (2 * MONITOR_MARGIN), monitor.y + monitor.h - (2 * MONITOR_MARGIN));
+  context.lineTo(monitor.x, monitor.y + monitor.h);
   context.closePath();
   context.fill();
 
   context.fillStyle = MONITOR_DARK_COLOR;
   context.beginPath();
-  context.moveTo(this.x, this.y);
-  context.lineTo(this.x + this.w, this.y);
-  context.lineTo(this.x + this.w - (2 * MONITOR_MARGIN), this.y + (2 * MONITOR_MARGIN));
-  context.lineTo(this.x + (2 * MONITOR_MARGIN), this.y + (2 * MONITOR_MARGIN));
+  context.moveTo(monitor.x, monitor.y);
+  context.lineTo(monitor.x + monitor.w, monitor.y);
+  context.lineTo(monitor.x + monitor.w - (2 * MONITOR_MARGIN), monitor.y + (2 * MONITOR_MARGIN));
+  context.lineTo(monitor.x + (2 * MONITOR_MARGIN), monitor.y + (2 * MONITOR_MARGIN));
   context.closePath();
   context.fill();
 
   context.fillStyle = BLACK;
-  context.fillRect(this.x + MONITOR_MARGIN, this.y + MONITOR_MARGIN, this.w - (2 * MONITOR_MARGIN), this.h - (2 * MONITOR_MARGIN));
+  context.fillRect(monitor.x + MONITOR_MARGIN, monitor.y + MONITOR_MARGIN, monitor.w - (2 * MONITOR_MARGIN), monitor.h - (2 * MONITOR_MARGIN));
 
   // Render power button
   renderButton(powerButton);
 
   // Render terminal if monitor is on
   if (powerButton.state === 'on') {
-    this.renderTerminal(context);
+    renderTerminal(monitor.terminal);
   }
 
   // Render boot flash
-  if (this.booting == 'up'){
-    x = this.x + MONITOR_MARGIN + 6;
-    y = this.y + MONITOR_MARGIN + 6;
-    w = this.w - (2 * MONITOR_MARGIN) - 12;
-    h = this.h - (2 * MONITOR_MARGIN) - 12;
-    var opacity = Math.round((this.bootStep / MONITOR_BOOT_STEPS) * 100) / 100;
+  if (monitor.booting == 'up'){
+    x = monitor.x + MONITOR_MARGIN + 6;
+    y = monitor.y + MONITOR_MARGIN + 6;
+    w = monitor.w - (2 * MONITOR_MARGIN) - 12;
+    h = monitor.h - (2 * MONITOR_MARGIN) - 12;
+    var opacity = Math.round((monitor.bootStep / MONITOR_BOOT_STEPS) * 100) / 100;
     context.fillStyle = 'rgba(255, 255, 255, ' + opacity + ')';
     context.fillRect(x, y, w, h);
   }
-  else if (this.booting == 'down') {
-    h = (this.bootStep / MONITOR_BOOT_STEPS) * (this.h - (2 * MONITOR_MARGIN));
+  else if (monitor.booting == 'down') {
+    h = (monitor.bootStep / MONITOR_BOOT_STEPS) * (monitor.h - (2 * MONITOR_MARGIN));
 
-    x = this.x + MONITOR_MARGIN + 6;
-    y = this.y + (this.h / 2);
-    w = this.w - (2 * MONITOR_MARGIN) - 12;
+    x = monitor.x + MONITOR_MARGIN + 6;
+    y = monitor.y + (monitor.h / 2);
+    w = monitor.w - (2 * MONITOR_MARGIN) - 12;
 
     context.fillStyle = 'white';
     context.fillRect(x, y - (h / 2), w, h);
   }
 
   // Render monitor glare
-  x = this.x + this.w;
-  y = this.y;
-  var gradient = context.createRadialGradient(x, y, this.w / 3, x++, y--, 2);
+  x = monitor.x + monitor.w;
+  y = monitor.y;
+  var gradient = context.createRadialGradient(x, y, monitor.w / 3, x++, y--, 2);
   gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
   gradient.addColorStop(1, 'rgba(255, 255, 255, 0.5)');
   context.fillStyle = gradient;
-  context.fillRect(this.x + MONITOR_MARGIN + 4, this.y + MONITOR_MARGIN + 4, this.w - (2 * MONITOR_MARGIN) - 8, this.h - (2 * MONITOR_MARGIN) - 8);
-};
-Monitor.prototype.renderTerminal = function(context) {
-  context.font = TERMINAL_FONT;
-  context.fillStyle = this.terminal.color;
-  context.fillText('> ' + this.terminal.buffer, this.x + MONITOR_MARGIN + MONITOR_PADDING, this.y + this.h - (MONITOR_MARGIN + MONITOR_PADDING));
+  context.fillRect(monitor.x + MONITOR_MARGIN + 4, monitor.y + MONITOR_MARGIN + 4, monitor.w - (2 * MONITOR_MARGIN) - 8, monitor.h - (2 * MONITOR_MARGIN) - 8);
+}
 
-  if (this.terminal.showCursor) {
+function renderTerminal(terminal) {
+  context.font = TERMINAL_FONT;
+  context.fillStyle = terminal.color;
+  context.fillText('> ' + terminal.buffer, monitor.x + MONITOR_MARGIN + MONITOR_PADDING, monitor.y + monitor.h - (MONITOR_MARGIN + MONITOR_PADDING));
+
+  if (terminal.showCursor) {
     var cursor = ' _';
-    for (var i = 0; i <= this.terminal.cursor; i++) {
+    for (var i = 0; i <= terminal.cursor; i++) {
       cursor = ' ' + cursor;
     }
-    context.fillText(cursor, this.x + MONITOR_MARGIN + MONITOR_PADDING, this.y + this.h - (MONITOR_MARGIN + MONITOR_PADDING));
+    context.fillText(cursor, monitor.x + MONITOR_MARGIN + MONITOR_PADDING, monitor.y + monitor.h - (MONITOR_MARGIN + MONITOR_PADDING));
   }
 
-  if (this.terminal.ascii.length > 0) {
-    this.renderAscii(context);
+  if (terminal.ascii.length > 0) {
+    context.fillStyle = terminal.color;
+    var x = monitor.x + MONITOR_MARGIN + MONITOR_PADDING;
+    var y = monitor.y + MONITOR_MARGIN + MONITOR_PADDING + 8;
+    if (terminal.ascii instanceof Array) {
+      for (var row = 0; row < terminal.ascii.length; row++) {
+        context.fillText(terminal.ascii[row], x, y);
+        y += KEY_TEXT_SIZE;
+      }
+    }
   }
-  else if (this.terminal.message.length > 0) {
+  else if (terminal.message.length > 0) {
     var message;
-    for (var index = 0, row = 0; index < this.terminal.message.length && row < TERMINAL_MESSAGE_ROWS; index++) {
-      var rawMessage = (this.terminal.message[this.terminal.message.length - index - 1]).split("\n");
+    for (var index = 0, row = 0; index < terminal.message.length && row < TERMINAL_MESSAGE_ROWS; index++) {
+      var rawMessage = (terminal.message[terminal.message.length - index - 1]).split("\n");
       message = rawMessage;
 
-      if (this.terminal.messageInterval && index == 0) {
+      if (terminal.messageInterval && index == 0) {
         message = [];
         var charCount = 0;
         for (var line = 0; line < rawMessage.length; line++) {
-          if (charCount + rawMessage[line].length > this.terminal.messageEnd) {
-            message[line] = rawMessage[line].slice(0, this.terminal.messageEnd - charCount);
+          if (charCount + rawMessage[line].length > terminal.messageEnd) {
+            message[line] = rawMessage[line].slice(0, terminal.messageEnd - charCount);
             break;
           }
           message[line] = rawMessage[line];
@@ -129,75 +125,61 @@ Monitor.prototype.renderTerminal = function(context) {
       }
 
       for (var i = message.length - 1; i >= 0 && row < TERMINAL_MESSAGE_ROWS; i--) {
-        context.fillText(message[message.length - 1 - i], this.x + MONITOR_MARGIN + MONITOR_PADDING, this.y + this.h - (MONITOR_MARGIN + MONITOR_PADDING) - ((TERMINAL_MESSAGE_ROWS - row) * KEY_TEXT_SIZE) - 2);
+        context.fillText(message[message.length - 1 - i], monitor.x + MONITOR_MARGIN + MONITOR_PADDING, monitor.y + monitor.h - (MONITOR_MARGIN + MONITOR_PADDING) - ((TERMINAL_MESSAGE_ROWS - row) * KEY_TEXT_SIZE) - 2);
         row++;
       }
     }
   }
-};
-Monitor.prototype.renderAscii = function(context) {
-  context.fillStyle = this.terminal.color;
-  var x = this.x + MONITOR_MARGIN + MONITOR_PADDING;
-  var y = this.y + MONITOR_MARGIN + MONITOR_PADDING + 8;
-  if (this.terminal.ascii instanceof Array) {
-    for (var row = 0; row < this.terminal.ascii.length; row++) {
-      context.fillText(this.terminal.ascii[row], x, y);
-      y += KEY_TEXT_SIZE;
-    }
-  }
-};
-Monitor.prototype.startAsciiAnimation = function(name) {
-  clearInterval(this.asciiInterval);
-  this.ascii = ASCII[name].split("\n");
-  this.asciiColor = BLACK;
-  this.asciiInterval = setInterval(stepAscii.bind(this), 410);
+}
 
-  function stepAscii() {
-    var color = this.asciiColor.toUpperCase();
+function startAsciiAnimation(name) {
+  clearInterval(monitor.asciiInterval);
+  monitor.ascii = ASCII[name].split("\n");
+  monitor.asciiColor = BLACK;
+  monitor.asciiInterval = setInterval(function() {
+    var color = monitor.asciiColor.toUpperCase();
 
     if (color == '#FFFFFF') {
-      clearInterval(this.asciiInterval);
+      clearInterval(monitor.asciiInterval);
     }
-    this.asciiColor = modHexColor(color, 2);
-  }
-};
-Monitor.prototype.renderBoot = function() {
-  clearInterval(this.bootInterval);
-  this.booting = 'up';
-  this.bootStep = MONITOR_BOOT_STEPS;
-  this.bootInterval = setInterval(stepBootSequence.bind(this), 10);
+    monitor.asciiColor = modHexColor(color, 2);
+  }, 410);
+}
 
-  function stepBootSequence() {
-    if (this.bootStep > MONITOR_BOOT_STEPS / 2) {
-      this.bootStep -= 10;
+function startBootUp() {
+  clearInterval(monitor.bootInterval);
+  monitor.booting = 'up';
+  monitor.bootStep = MONITOR_BOOT_STEPS;
+  monitor.bootInterval = setInterval(function() {
+    if (monitor.bootStep > MONITOR_BOOT_STEPS / 2) {
+      monitor.bootStep -= 10;
     }
     else {
-      this.bootStep -= 2;
+      monitor.bootStep -= 2;
     }
 
-    if (this.bootStep <= 0) {
-      this.booting = 'none';
-      clearInterval(this.bootInterval);
+    if (monitor.bootStep <= 0) {
+      monitor.booting = 'none';
+      clearInterval(monitor.bootInterval);
     }
-  }
-};
-Monitor.prototype.renderBootDown = function() {
-  clearInterval(this.bootInterval);
-  this.booting = 'down';
-  this.bootStep = MONITOR_BOOT_STEPS;
-  this.bootInterval = setInterval(stepBootDown.bind(this), 10);
+  }, 10);
+}
 
-  function stepBootDown() {
-    if (this.bootStep > MONITOR_BOOT_STEPS / 8) {
-      this.bootStep -= 40;
+function startBootDown() {
+  clearInterval(monitor.bootInterval);
+  monitor.booting = 'down';
+  monitor.bootStep = MONITOR_BOOT_STEPS;
+  monitor.bootInterval = setInterval(function() {
+    if (monitor.bootStep > MONITOR_BOOT_STEPS / 8) {
+      monitor.bootStep -= 40;
     }
     else {
-      this.bootStep -= 5;
+      monitor.bootStep -= 5;
     }
 
-    if (this.bootStep <= 0) {
-      this.booting = 'none';
-      clearInterval(this.bootInterval);
+    if (monitor.bootStep <= 0) {
+      monitor.booting = 'none';
+      clearInterval(monitor.bootInterval);
     }
-  }
-};
+  }, 10);
+}
