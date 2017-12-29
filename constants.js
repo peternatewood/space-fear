@@ -1,5 +1,5 @@
 // Declare all classes here
-var Actor, Computer, Key, Keyboard, Room, Save, Terminal;
+var Actor, Computer, Key, Room, Save;
 
 const SCREEN_W = 1280;
 const SCREEN_H = 600;
@@ -93,13 +93,6 @@ const KEY_DARK_BORDER_COLOR = "#663";
 
 const KEY_FONT = "12px Helvetica, sans-serif";
 
-// const KEYBOARD_KEYS = [
-//   ['~`', '!1', '@2', '#3', '$4', '%5', '^6', '&7', '*8', '(9', ')0', '_-', '+=', 'Backspace'],
-//   ['Tab', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{[', '}]', '|\\'],
-//   ['CapsLock', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':;', '"\'', 'Enter'],
-//   ['Shift', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<,', '>.', '?/', 'Shift'],
-//   ['Ctrl', 'Meta', 'Alt', ' ', 'Alt', 'Ctrl'],
-// ];
 const KEYBOARD_KEYS = [
   { key: "~`",        x: 339, y: 398, w:  36, h: 36 },
   { key: "!1",        x: 377, y: 398, w:  36, h: 36 },

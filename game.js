@@ -9,7 +9,7 @@ function handleKeyDown(event) {
     // shortcuts
     if (! event.altKey && ! event.ctrlKey && ! event.metaKey) event.preventDefault();
 
-    monitor.terminal.handleInput(event);
+    handleTerminalInput(event);
 
     if (index.length > 1)
       index.forEach(function(i) {
@@ -37,7 +37,7 @@ function handleMouseDown(event) {
     if (cursor.key) {
       var keyName = pressCursorKey();
       if (not(cursor.isHoldingKey)) {
-        monitor.terminal.handleInput({key: keyName});
+        handleTerminalInput({key: keyName});
       }
     }
     else if (isMouseOverButton(event, powerButton)) {
@@ -95,7 +95,7 @@ function handleMouseUp(event) {
       case 'off': startBootDown(); break;
       // Render standby?
     }
-    allowInput(monitor.terminal);
+    terminal.allowInput = powerButton.state === 'on';
   }
   else {
     releaseCursorKey()

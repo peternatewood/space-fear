@@ -1,142 +1,91 @@
-Terminal = function() {
-  this.buffer = '';
-  this.cursor = 0;
-  this.showCursor = true;
-  this.allowInput = false;
-  this.bufferLog = [];
-  this.logOffset = 0;
-  this.blinkInterval = 0;
-  this.scene = 0;
+var terminal = {
+  buffer: '',
+  cursor: 0,
+  showCursor: true,
+  allowInput: false,
+  bufferLog: [],
+  logOffset: 0,
+  blinkInterval: 0,
+  scene: 0,
 
-  this.message = [SCENE_MESSAGES[0]];
-  this.messageLog = [SCENE_MESSAGES[0]];
-  this.messageEnd = 0;
-  this.messageInterval = false;
-  this.color = WHITE;
-  this.ascii = [];
-  this.inventory = [];
+  message: [SCENE_MESSAGES[0]],
+  messageLog: [SCENE_MESSAGES[0]],
+  messageEnd: 0,
+  messageInterval: false,
+  color: WHITE,
+  ascii: [],
+  inventory: [],
 
-  this.computer = new Computer();
-  this.save = new Save();
-  this.player = new Actor();
+  computer: new Computer(),
+  save: new Save(),
+  player: new Actor(),
+  rooms: new Array(ROOMS.length),
+};
 
-  this.restartCursorBlink();
-
-  this.rooms = {};
-  for (var i = 0; i < ROOMS.length; i++) {
-    var room = ROOMS[i];
-    this.rooms[room.name] = new Room(room.messages, room.items, room.adjacents);
-  }
-
-  return this;
+terminal.rooms = {};
+for (var i = 0; i < ROOMS.length; i++) {
+  var room = ROOMS[i];
+  terminal.rooms[room.name] = new Room(room.messages, room.items, room.adjacents);
 }
-Terminal.prototype.destroy = function() {
-  clearInterval(this.blinkInterval);
-  clearInterval(this.messageInterval);
-};
-Terminal.prototype.sceneMessage = function() {
-  return SCENE_MESSAGES[this.scene];
-};
-Terminal.prototype.handleInput = function(event) {
-  if (this.allowInput) {
-    var key = window.crossGetKey(event);
-    this.restartCursorBlink();
-    // Only allow printable characters
-    if (/^.$/.test(key) && this.cursor < TERMINAL_MESSAGE_CHARS) {
-      this.buffer = this.buffer.slice(0, this.cursor) + key + this.buffer.slice(this.cursor);
-      this.cursor += 1;
-    }
-    else if (key == 'Backspace' && this.cursor > 0) {
-      var before = this.buffer.slice(0, this.cursor - 1);
-      var after = this.buffer.slice(this.cursor, this.buffer.length);
 
-      this.buffer = before + after;
-      this.cursor -= 1;
-    }
-    else if (key == 'Delete' && this.cursor < this.buffer.length) {
-      var before = this.buffer.slice(0, this.cursor);
-      var after = this.buffer.slice(this.cursor + 1, this.buffer.length);
+function getSceneMessage() {
+  return SCENE_MESSAGES[terminal.scene];
+}
 
-      this.buffer = before + after;
-    }
-    else if (key == 'Enter') {
-      if (this.messageInterval) {
-        this.skipMessage();
-      }
+function restartCursorBlink() {
+  terminal.showCursor = true;
+  clearInterval(terminal.blinkInterval);
 
-      if (this.ascii.length > 0) this.ascii = [];
-      if (this.buffer) this.readBuffer();
-    }
-    else if (key == 'ArrowLeft' && this.cursor > 0) {
-      this.cursor -= 1;
-    }
-    else if (key == 'ArrowRight' && this.cursor < this.buffer.length) {
-      this.cursor += 1;
-    }
-    else if (key == 'ArrowDown' && this.logOffset > 0) {
-      this.logOffset -= 1;
-      if (this.logOffset > 0) {
-        this.buffer = this.bufferLog[this.logOffset - 1];
-        this.cursor = this.buffer.length;
-      }
-      else {
-        this.clearBuffer();
-      }
-    }
-    else if (key == 'ArrowUp' && this.logOffset < this.bufferLog.length) {
-      this.logOffset += 1;
-      this.buffer = this.bufferLog[this.logOffset - 1];
-      this.cursor = this.buffer.length;
-    }
-    return key;
-  }
-};
-Terminal.prototype.disableInput = function() {
-  this.allowInput = false;
-  this.disableCursor();
-};
-Terminal.prototype.enableInput = function() {
-  this.allowInput = true;
-  this.restartCursorBlink();
-};
-Terminal.prototype.clearBuffer = function() {
-  this.buffer = '';
-  this.cursor = 0;
-};
-Terminal.prototype.readBuffer = function() {
-  this.bufferLog.unshift(this.buffer);
-  this.processCommands();
-  this.clearBuffer();
-};
-Terminal.prototype.startMessage = function() {
-  this.messageEnd = 0;
+  terminal.blinkInterval = setInterval(function() {
+    terminal.showCursor = ! terminal.showCursor
+  }, CURSOR_BLINK_DELAY);
+}
+
+function clearTerminalBuffer() {
+  terminal.buffer = '';
+  terminal.cursor = 0;
+}
+function readTerminalBuffer() {
+  terminal.bufferLog.unshift(terminal.buffer);
+  processCommands();
+  clearTerminalBuffer();
+}
+
+function disableTerminalCursor() {
+  terminal.showCursor = false;
+  clearInterval(terminal.blinkInterval);
+}
+function disableTerminalInput() {
+  terminal.allowInput = false;
+  disableTerminalCursor();
+}
+function enableTerminalInput() {
+  terminal.allowInput = true;
+  terminal.restartCursorBlink();
+}
+
+function skipMessage() {
+  clearInterval(terminal.messageInterval);
+  terminal.messageInterval = false;
+}
+
+function startMessage() {
+  terminal.messageEnd = 0;
   var messageLength = 0;
-  var splitMessage = this.message[this.message.length - 1].split("\n");
+  var splitMessage = terminal.message[terminal.message.length - 1].split("\n");
   for (var i = 0; i < splitMessage.length; i++) {
     messageLength += splitMessage[i].length;
   }
 
-  this.messageInterval = setInterval(function() {
-    this.messageEnd++;
-    if (this.messageEnd > messageLength) {
-      this.skipMessage();
+  terminal.messageInterval = setInterval(function() {
+    terminal.messageEnd++;
+    if (terminal.messageEnd > messageLength) {
+      skipMessage();
     }
-  }.bind(this), MESSAGE_DELAY);
-};
-Terminal.prototype.skipMessage = function() {
-  clearInterval(this.messageInterval);
-  this.messageInterval = false;
-};
-Terminal.prototype.disableCursor = function() {
-  this.showCursor = false;
-  clearInterval(this.blinkInterval);
-};
-Terminal.prototype.restartCursorBlink = function() {
-  this.showCursor = true;
-  clearInterval(this.blinkInterval);
-  this.blinkInterval = setInterval(function() {this.showCursor = ! this.showCursor}.bind(this), CURSOR_BLINK_DELAY);
-};
-Terminal.prototype.pushMessage = function(rawMessage) {
+  }, MESSAGE_DELAY);
+}
+
+function pushMessage(rawMessage) {
   var message = rawMessage;
   if (message instanceof Array) {
     message = rawMessage.join("\n");
@@ -155,63 +104,64 @@ Terminal.prototype.pushMessage = function(rawMessage) {
     message = rawMessage.join("\n");
   }
 
-  if (this.message.length > TERMINAL_MESSAGE_ROWS) {
-    this.message = this.message.slice(1);
+  if (terminal.message.length > TERMINAL_MESSAGE_ROWS) {
+    terminal.message = terminal.message.slice(1);
   }
 
-  this.message.push(message);
-  this.messageLog.push(message);
-  this.startMessage();
-};
-Terminal.prototype.processCommands = function() {
-  switch(this.scene) {
+  terminal.message.push(message);
+  terminal.messageLog.push(message);
+  startMessage();
+}
+
+function processCommands() {
+  switch(terminal.scene) {
     case 0:
-      var name = this.bufferLog[0].trim();
+      var name = terminal.bufferLog[0].trim();
       if (/\S+/.test(name)) {
-        this.save.save({name: name});
-        this.scene = 1;
-        this.rooms.hibernation.items['bed 3'] = this.rooms.hibernation.items['bed 3'].replace('{{name}}', name);
-        this.pushMessage('Welcome to Space Fear, ' + name + '. ' + this.sceneMessage());
+        terminal.save.save({name: name});
+        terminal.scene = 1;
+        terminal.rooms.hibernation.items['bed 3'] = terminal.rooms.hibernation.items['bed 3'].replace('{{name}}', name);
+        pushMessage('Welcome to Space Fear, ' + name + '. ' + getSceneMessage());
       }
       else {
-        this.pushMessage(this.sceneMessage());
+        pushMessage(getSceneMessage());
       }
       break;
 
     default:
-      var commands = this.bufferLog[0].split(' ');
+      var commands = terminal.bufferLog[0].split(' ');
       switch(getCommand(commands[0])) {
         case 'clear':
-          this.message = [];
+          terminal.message = [];
           break;
 
         case 'close':
           var name = commands.slice(1).join(' ');
-          if (this.rooms[name]) {
-            this.rooms[name].closeDoor(this.player.room);
+          if (terminal.rooms[name]) {
+            terminal.rooms[name].closeDoor(terminal.player.room);
           }
-          this.pushMessage(this.rooms[this.player.room].closeDoor(name));
-          console.log(this.rooms);
+          pushMessage(terminal.rooms[terminal.player.room].closeDoor(name));
+          // console.log(terminal.rooms);
           break;
 
         case 'color':
           var message = 'Valid options include: default, crimson, lime, slateblue';
           if (VALID_COLORS.includes(commands[1])) {
-            this.color = commands[1] == 'default' ? DEFAULT_TERMINAL_COLOR : commands[1];
+            terminal.color = commands[1] == 'default' ? DEFAULT_TERMINAL_COLOR : commands[1];
             message = 'Color: ' + commands[1];
           }
-          this.pushMessage(message);
+          pushMessage(message);
           break;
 
         case 'computer':
           var question = commands.slice(1).join(' ');
-          this.pushMessage(this.computer.answerQuestion(question));
+          pushMessage(terminal.computer.answerQuestion(question));
           break;
 
         case 'help':
           var commandName = getCommand(commands[1]);
           if (commands[1] && VALID_COMMANDS[commandName]) {
-            this.pushMessage(VALID_COMMANDS[commandName]);
+            pushMessage(VALID_COMMANDS[commandName]);
           }
           else {
             var commands = [];
@@ -220,7 +170,7 @@ Terminal.prototype.processCommands = function() {
                 commands.push(prop);
               }
             }
-            this.pushMessage(commands.join(', '));
+            pushMessage(commands.join(', '));
           }
           break;
 
@@ -228,51 +178,163 @@ Terminal.prototype.processCommands = function() {
           if (! isNaN(commands[1])) {
             var history = [];
             for (var i = commands[1] < TERMINAL_MESSAGE_ROWS ? commands[1] : TERMINAL_MESSAGE_ROWS; i >= 0; i--) {
-              if (this.bufferLog[i]) {
-                history.push(this.bufferLog[i])
+              if (terminal.bufferLog[i]) {
+                history.push(terminal.bufferLog[i])
               }
             }
-            this.pushMessage(history);
+            pushMessage(history);
           }
           else {
-            this.pushMessage('Please enter a number: E.G. history 2');
+            pushMessage('Please enter a number: E.G. history 2');
           }
           break;
 
         case 'look':
-          var room = this.rooms[this.player.room];
+          var room = terminal.rooms[terminal.player.room];
           var item = room.items[commands.slice(1).join(' ')];
           if (item) {
-            this.pushMessage(item);
+            pushMessage(item);
           }
           else {
-            this.pushMessage(room.message());
+            pushMessage(room.message());
           }
           break;
 
         case 'map':
           var map = ASCII['map' + commands[1]];
           if (map) {
-            this.ascii = map;
+            terminal.ascii = map;
           }
           else {
-            this.ascii = ASCII['map' + this.player.floor];
+            terminal.ascii = ASCII['map' + terminal.player.floor];
           }
           break;
 
         case 'open':
           var name = commands.slice(1).join(' ');
-          if (this.rooms[name]) {
-            this.rooms[name].openDoor(this.player.room);
+          if (terminal.rooms[name]) {
+            terminal.rooms[name].openDoor(terminal.player.room);
           }
-          this.pushMessage(this.rooms[this.player.room].openDoor(name));
-          console.log(this.rooms);
+          pushMessage(terminal.rooms[terminal.player.room].openDoor(name));
+          // console.log(terminal.rooms);
           break;
 
         default:
-          this.pushMessage(DEFAULT_MESSAGE);
+          pushMessage(DEFAULT_MESSAGE);
           break;
       }
       break;
   }
 };
+
+function handleTerminalInput(e) {
+  if (terminal.allowInput) {
+    var key = window.crossGetKey(e);
+    restartCursorBlink();
+    // Only allow printable characters
+    if (/^.$/.test(key) && terminal.cursor < TERMINAL_MESSAGE_CHARS) {
+      terminal.buffer = terminal.buffer.slice(0, terminal.cursor) + key + terminal.buffer.slice(terminal.cursor);
+      terminal.cursor += 1;
+    }
+    else if (key == 'Backspace' && terminal.cursor > 0) {
+      var before = terminal.buffer.slice(0, terminal.cursor - 1);
+      var after = terminal.buffer.slice(terminal.cursor, terminal.buffer.length);
+
+      terminal.buffer = before + after;
+      terminal.cursor -= 1;
+    }
+    else if (key == 'Delete' && terminal.cursor < terminal.buffer.length) {
+      var before = terminal.buffer.slice(0, terminal.cursor);
+      var after = terminal.buffer.slice(terminal.cursor + 1, terminal.buffer.length);
+
+      terminal.buffer = before + after;
+    }
+    else if (key == 'Enter') {
+      if (terminal.messageInterval) {
+        skipMessage();
+      }
+
+      if (terminal.ascii.length > 0) {
+        terminal.ascii = [];
+      }
+      if (terminal.buffer) {
+        readTerminalBuffer();
+      }
+    }
+    else if (key == 'ArrowLeft' && terminal.cursor > 0) {
+      terminal.cursor -= 1;
+    }
+    else if (key == 'ArrowRight' && terminal.cursor < terminal.buffer.length) {
+      terminal.cursor += 1;
+    }
+    else if (key == 'ArrowDown' && terminal.logOffset > 0) {
+      terminal.logOffset -= 1;
+      if (terminal.logOffset > 0) {
+        terminal.buffer = terminal.bufferLog[terminal.logOffset - 1];
+        terminal.cursor = terminal.buffer.length;
+      }
+      else {
+        clearTerminalBuffer();
+      }
+    }
+    else if (key == 'ArrowUp' && terminal.logOffset < terminal.bufferLog.length) {
+      terminal.logOffset += 1;
+      terminal.buffer = terminal.bufferLog[terminal.logOffset - 1];
+      terminal.cursor = terminal.buffer.length;
+    }
+    return key;
+  }
+}
+
+function renderTerminal(monitor) {
+  context.font = TERMINAL_FONT;
+  context.fillStyle = terminal.color;
+  context.fillText('> ' + terminal.buffer, monitor.x + MONITOR_MARGIN + MONITOR_PADDING, monitor.y + monitor.h - (MONITOR_MARGIN + MONITOR_PADDING));
+
+  if (terminal.showCursor) {
+    var cursor = ' _';
+    for (var i = 0; i <= terminal.cursor; i++) {
+      cursor = ' ' + cursor;
+    }
+    context.fillText(cursor, monitor.x + MONITOR_MARGIN + MONITOR_PADDING, monitor.y + monitor.h - (MONITOR_MARGIN + MONITOR_PADDING));
+  }
+
+  if (terminal.ascii.length > 0) {
+    context.fillStyle = terminal.color;
+    var x = monitor.x + MONITOR_MARGIN + MONITOR_PADDING;
+    var y = monitor.y + MONITOR_MARGIN + MONITOR_PADDING + 8;
+    if (terminal.ascii instanceof Array) {
+      for (var row = 0; row < terminal.ascii.length; row++) {
+        context.fillText(terminal.ascii[row], x, y);
+        y += KEY_TEXT_SIZE;
+      }
+    }
+  }
+  else if (terminal.message.length > 0) {
+    var message;
+    for (var index = 0, row = 0; index < terminal.message.length && row < TERMINAL_MESSAGE_ROWS; index++) {
+      var rawMessage = (terminal.message[terminal.message.length - index - 1]).split("\n");
+      message = rawMessage;
+
+      if (terminal.messageInterval && index == 0) {
+        message = [];
+        var charCount = 0;
+        for (var line = 0; line < rawMessage.length; line++) {
+          if (charCount + rawMessage[line].length > terminal.messageEnd) {
+            message[line] = rawMessage[line].slice(0, terminal.messageEnd - charCount);
+            break;
+          }
+          message[line] = rawMessage[line];
+          charCount += rawMessage[line].length;
+        }
+      }
+
+      for (var i = message.length - 1; i >= 0 && row < TERMINAL_MESSAGE_ROWS; i--) {
+        context.fillText(message[message.length - 1 - i], monitor.x + MONITOR_MARGIN + MONITOR_PADDING, monitor.y + monitor.h - (MONITOR_MARGIN + MONITOR_PADDING) - ((TERMINAL_MESSAGE_ROWS - row) * KEY_TEXT_SIZE) - 2);
+        row++;
+      }
+    }
+  }
+}
+
+restartCursorBlink();

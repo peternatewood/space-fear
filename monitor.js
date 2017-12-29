@@ -3,16 +3,11 @@ var monitor = {
   y: MONITOR_TOP,
   w: MONITOR_WIDTH,
   h: MONITOR_HEIGHT,
-  terminal: new Terminal,
   booting: 'none',
   bootStep: MONITOR_BOOT_STEPS,
   bootInterval: 0,
   asciiInterval: 0
 };
-
-function allowInput(terminal) {
-  return terminal.allowInput = powerButton.state === 'on';
-}
 
 function renderMonitor() {
   var x, y;
@@ -47,7 +42,7 @@ function renderMonitor() {
 
   // Render terminal if monitor is on
   if (powerButton.state === 'on') {
-    renderTerminal(monitor.terminal);
+    renderTerminal(monitor);
   }
 
   // Render boot flash
@@ -79,57 +74,6 @@ function renderMonitor() {
   gradient.addColorStop(1, 'rgba(255, 255, 255, 0.5)');
   context.fillStyle = gradient;
   context.fillRect(monitor.x + MONITOR_MARGIN + 4, monitor.y + MONITOR_MARGIN + 4, monitor.w - (2 * MONITOR_MARGIN) - 8, monitor.h - (2 * MONITOR_MARGIN) - 8);
-}
-
-function renderTerminal(terminal) {
-  context.font = TERMINAL_FONT;
-  context.fillStyle = terminal.color;
-  context.fillText('> ' + terminal.buffer, monitor.x + MONITOR_MARGIN + MONITOR_PADDING, monitor.y + monitor.h - (MONITOR_MARGIN + MONITOR_PADDING));
-
-  if (terminal.showCursor) {
-    var cursor = ' _';
-    for (var i = 0; i <= terminal.cursor; i++) {
-      cursor = ' ' + cursor;
-    }
-    context.fillText(cursor, monitor.x + MONITOR_MARGIN + MONITOR_PADDING, monitor.y + monitor.h - (MONITOR_MARGIN + MONITOR_PADDING));
-  }
-
-  if (terminal.ascii.length > 0) {
-    context.fillStyle = terminal.color;
-    var x = monitor.x + MONITOR_MARGIN + MONITOR_PADDING;
-    var y = monitor.y + MONITOR_MARGIN + MONITOR_PADDING + 8;
-    if (terminal.ascii instanceof Array) {
-      for (var row = 0; row < terminal.ascii.length; row++) {
-        context.fillText(terminal.ascii[row], x, y);
-        y += KEY_TEXT_SIZE;
-      }
-    }
-  }
-  else if (terminal.message.length > 0) {
-    var message;
-    for (var index = 0, row = 0; index < terminal.message.length && row < TERMINAL_MESSAGE_ROWS; index++) {
-      var rawMessage = (terminal.message[terminal.message.length - index - 1]).split("\n");
-      message = rawMessage;
-
-      if (terminal.messageInterval && index == 0) {
-        message = [];
-        var charCount = 0;
-        for (var line = 0; line < rawMessage.length; line++) {
-          if (charCount + rawMessage[line].length > terminal.messageEnd) {
-            message[line] = rawMessage[line].slice(0, terminal.messageEnd - charCount);
-            break;
-          }
-          message[line] = rawMessage[line];
-          charCount += rawMessage[line].length;
-        }
-      }
-
-      for (var i = message.length - 1; i >= 0 && row < TERMINAL_MESSAGE_ROWS; i--) {
-        context.fillText(message[message.length - 1 - i], monitor.x + MONITOR_MARGIN + MONITOR_PADDING, monitor.y + monitor.h - (MONITOR_MARGIN + MONITOR_PADDING) - ((TERMINAL_MESSAGE_ROWS - row) * KEY_TEXT_SIZE) - 2);
-        row++;
-      }
-    }
-  }
 }
 
 function startAsciiAnimation(name) {
