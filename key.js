@@ -1,12 +1,12 @@
-Key = function(key, x, y, w, h) {
-  this.key = key;
-  this.x = x;
-  this.y = y;
-  this.w = w ? w : MIN_KEY_SIZE;
-  this.h = h ? h : MIN_KEY_SIZE;
+Key = function(options) {
+  this.key = options.key;
+  this.x = options.x;
+  this.y = options.y;
+  this.w = options.w;
+  this.h = options.h;
 
-  this.keyboardx = x;
-  this.keyboardy = y;
+  this.keyboardx = options.x;
+  this.keyboardy = options.y;
   this.mousex;
   this.mousey;
 
@@ -14,27 +14,6 @@ Key = function(key, x, y, w, h) {
   this.disabled = false;
   this.onKeyboard = true;
   this.moveInterval;
-
-  var getKeyWidth = function(chars) {
-    add = 0;
-
-    switch(chars) {
-      case 'Backspace': add = 72; break;
-      case 'Tab': add = 26; break;
-      case '|\\': add = 46; break;
-      case 'CapsLock': add = 46; break;
-      case 'Enter': add = 64; break;
-      case 'Shift': add = 74; break;
-      case 'Ctrl': add = 18; break;
-      case 'Meta': add = 18; break;
-      case 'Alt': add = 18; break;
-      case ' ': add = 172; break;
-      default: break;
-    }
-
-    return MIN_KEY_SIZE + add;
-  };
-  this.w = getKeyWidth(key);
 
   return this;
 }

@@ -1,7 +1,5 @@
 var canvas = document.getElementById('canvas');
-var showCursor = true;
 var context = canvas.getContext('2d');
-var keyboard = new Keyboard(canvas);
 
 function handleKeyDown(event) {
   // Handle only keys that are displayed on the keyboard
@@ -111,19 +109,19 @@ canvas.addEventListener('mousedown', handleMouseDown);
 canvas.addEventListener('mousemove', handleMouseMove);
 canvas.addEventListener('mouseup', handleMouseUp);
 canvas.addEventListener('mouseout', function() {
-  showCursor = false;
+  cursor.show = false;
 });
 canvas.addEventListener('mouseover', function() {
-  showCursor = true;
+  cursor.show = true;
 });
 // keyboard.keys[0].disabled = true;
 
 function step(timestamp) {
   context.clearRect(0, 0, SCREEN_W, SCREEN_H);
-  keyboard.render();
+  renderKeyboard();
   renderMonitor();
 
-  if (showCursor) {
+  if (cursor.show) {
     renderCursor();
   }
 

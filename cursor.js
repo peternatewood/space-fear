@@ -1,6 +1,7 @@
 var cursor = {
   x: 0,
   y: 0,
+  show: true,
   color: WHITE,
   key: null,
   isHoldingKey: false

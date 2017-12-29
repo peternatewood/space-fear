@@ -46,10 +46,7 @@ Computer.prototype.handleYesNo = function(question) {
   return 'Yes/no question: ' + question;
 };
 
-var QUESTION_TYPES = /who|how|what|when|why|where/;
-function capitalize(word) {
-  return word[0].toUpperCase() + word.slice(1);
-}
-var DESCRIPTIONS = {
+const QUESTION_TYPES = /who|how|what|when|why|where/;
+const DESCRIPTIONS = {
   'station': 'The deep space research station',
 }
