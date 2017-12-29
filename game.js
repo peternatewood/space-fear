@@ -44,8 +44,8 @@ function handleMouseDown(event) {
         monitor.terminal.handleInput({key: keyName});
       }
     }
-    else if (monitor.powerButton.detectMouseOver(event)) {
-      monitor.powerButton.press(event);
+    else if (isMouseOverButton(event, powerButton)) {
+      powerButton.pressed = true;
     }
   }
 };
@@ -77,14 +77,14 @@ function handleMouseMove(event) {
     }
   }
 
-  if (monitor.powerButton.detectMouseOver(event)) {
+  if (isMouseOverButton(event, powerButton)) {
     cursor.hoverOn();
   }
   else {
     cursor.hoverOff();
 
-    if (monitor.powerButton.pressed) {
-      monitor.powerButton.pressed = false;
+    if (powerButton.pressed) {
+      powerButton.pressed = false;
     }
   }
 };
@@ -92,7 +92,7 @@ function handleMouseUp(event) {
   if (cursor.key && cursor.key.disabled) {
     cursor.releaseKey();
   }
-  else if (monitor.powerButton.pressed && monitor.powerButton.detectMouseOver(event)) {
+  else if (powerButton.pressed && isMouseOverButton(event, powerButton)) {
     monitor.releaseButton(event);
     monitor.allowInput();
   }

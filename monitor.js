@@ -5,7 +5,6 @@ Monitor = function(canvas) {
   this.h = MONITOR_HEIGHT;
 
   this.terminal = new Terminal;
-  this.powerButton = new Button(this.x + this.w + (2 * POWER_BUTTON_SIZE), this.y + this.h - POWER_BUTTON_SIZE);
   this.booting = 'none';
   this.bootStep = MONITOR_BOOT_STEPS;
   this.bootInterval;
@@ -14,18 +13,12 @@ Monitor = function(canvas) {
 
   return this;
 }
-Monitor.prototype.destroy = function() {
-  this.powerButton.destroy();
-  this.terminal.destroy();
-
-  clearInterval(this.bootInterval);
-  clearInterval(this.asciiInterval);
-};
 Monitor.prototype.allowInput = function() {
-  return this.terminal.allowInput = this.powerButton.state == 'on';
+  return this.terminal.allowInput = powerButton.state === 'on';
 };
 Monitor.prototype.releaseButton = function(event) {
-  switch(this.powerButton.release(event)) {
+  cycleButtonState(powerButton);
+  switch (powerButton.state) {
     case 'on':
       this.renderBoot();
       break;
@@ -63,10 +56,10 @@ Monitor.prototype.render = function() {
   context.fillRect(this.x + MONITOR_MARGIN, this.y + MONITOR_MARGIN, this.w - (2 * MONITOR_MARGIN), this.h - (2 * MONITOR_MARGIN));
 
   // Render power button
-  this.powerButton.render(context);
+  renderButton(powerButton);
 
   // Render terminal if monitor is on
-  if (this.powerButton.state == 'on') {
+  if (powerButton.state === 'on') {
     this.renderTerminal(context);
   }
 

@@ -1,122 +1,112 @@
-Button = function(x, y) {
-  this.x = x;
-  this.y = y;
-  this.rad = POWER_BUTTON_SIZE;
-  this.glowRad = 2;
-  this.color = POWER_OFF_COLOR;
-
-  this.pressed = false;
-  this.state = 'off';
-  this.pulseDir;
-  this.pulseInterval;
-
-  this.pulse();
-
-  return this;
-}
-Button.prototype.destroy = function() {
-  clearInterval(this.pulseInterval);
+var powerButton = {
+  x: canvas.width / 2 - MONITOR_WIDTH / 2 + MONITOR_WIDTH + 2 * POWER_BUTTON_SIZE,
+  y: MONITOR_TOP + MONITOR_HEIGHT - POWER_BUTTON_SIZE,
+  rad: POWER_BUTTON_SIZE,
+  glowRad: 2,
+  color: POWER_OFF_COLOR,
+  pressed: false,
+  state: 'off',
+  pulseDir: 'grow',
+  pulseInterval: 0
 };
-Button.prototype.detectMouseOver = function(event) {
-  if (event.offsetX < this.x) {
+
+function isMouseOverButton(event, button) {
+  if (event.offsetX < button.x) {
     return false;
   }
-  else if (event.offsetX > (this.x + (2 * this.rad))) {
+  else if (event.offsetX > (button.x + (2 * button.rad))) {
     return false;
   }
-  else if (event.offsetY < this.y) {
+  else if (event.offsetY < button.y) {
     return false;
   }
-  else if (event.offsetY > (this.y + (2 * this.rad))) {
+  else if (event.offsetY > (button.y + (2 * button.rad))) {
     return false;
   }
   return true;
-};
-Button.prototype.press = function(event) {
-  this.pressed = true;
-};
-Button.prototype.release = function(event) {
-  this.pressed = false;
-  return this.toggle();
-};
-Button.prototype.toggle = function() {
-  switch(this.state) {
+}
+
+function cycleButtonState(button) {
+  button.pressed = false;
+  switch (button.state) {
     case 'off':
-      this.state = 'standby'
-      this.color = POWER_COLOR;
-      this.pulse();
+      button.state = 'standby'
+      button.color = POWER_COLOR;
+      startButtonPulse(button);
       break;
     case 'standby':
-      this.state = 'on';
-      this.pulse();
-      this.glowRad = this.rad - 10;
+      button.state = 'on';
+      startButtonPulse(button);
+      button.glowRad = button.rad - 10;
       break;
     case 'on':
-      this.state = 'off';
-      this.stopPulse();
-      this.color = POWER_OFF_COLOR;
+      button.state = 'off';
+      stopButtonPulse(button);
+      button.color = POWER_OFF_COLOR;
       break;
   }
-  return this.state;
-};
-Button.prototype.pulse = function() {
-  this.stopPulse();
-  this.pulseDir = 'grow';
-  var minRad = this.state == 'standby' ? 2 : 9;
-  var maxRad = this.rad - (this.state == 'standby' ? 10 : 5);
-  this.glowRad = minRad;
+  return button.state;
+}
 
-  var pulseButton = function(direction) {
-    if (this.pulseDir == 'grow') this.glowRad++;
-    else this.glowRad--;
+function startButtonPulse(button) {
+  stopButtonPulse(button);
+  button.pulseDir = 'grow';
+  var minRad = button.state == 'standby' ? 2 : 9;
+  var maxRad = button.rad - (button.state == 'standby' ? 10 : 5);
+  button.glowRad = minRad;
 
-    if (this.glowRad <= minRad) this.pulseDir = 'grow';
-    else if (this.glowRad >= maxRad) this.pulseDir = 'shrink';
-  }
+  button.pulseInterval = setInterval(function() {
+    if (button.pulseDir == 'grow') button.glowRad++;
+    else button.glowRad--;
 
-  this.pulseInterval = setInterval(pulseButton.bind(this), BUTTON_PULSE_DELAY);
-};
-Button.prototype.stopPulse = function() {
-  clearInterval(this.pulseInterval);
-};
-Button.prototype.render = function(context) {
-  var x = this.x + this.rad;
-  var y = this.y + this.rad;
+    if (button.glowRad <= minRad) button.pulseDir = 'grow';
+    else if (button.glowRad >= maxRad) button.pulseDir = 'shrink';
+  }, BUTTON_PULSE_DELAY);
+}
+function stopButtonPulse(button) {
+  clearInterval(button.pulseInterval);
+}
+
+function renderButton(button) {
+  var x = button.x + button.rad;
+  var y = button.y + button.rad;
 
   context.fillStyle = 'slategray';
   context.beginPath();
-  context.arc(x, y, this.rad, 0, 2 * Math.PI, false);
+  context.arc(x, y, button.rad, 0, 2 * Math.PI, false);
   context.closePath();
   context.fill();
 
-  if (not(this.pressed) && this.state !== 'on') {
+  if (not(button.pressed) && button.state !== 'on') {
     x++;
     y--;
   }
 
-  context.fillStyle = modHexColor(this.color, 0.5);
+  context.fillStyle = modHexColor(button.color, 0.5);
   context.beginPath();
-  context.arc(x, y, this.rad - 2, 0, 2 * Math.PI, false);
+  context.arc(x, y, button.rad - 2, 0, 2 * Math.PI, false);
   context.closePath();
   context.fill();
 
-  if (not(this.pressed)) {
-    x += this.state == 'off' ? 2 : 1;
-    y -= this.state == 'off' ? 2 : 1;
+  if (not(button.pressed)) {
+    x += button.state == 'off' ? 2 : 1;
+    y -= button.state == 'off' ? 2 : 1;
   }
 
-  if (this.state == 'off') {
-    context.fillStyle = this.color;
+  if (button.state == 'off') {
+    context.fillStyle = button.color;
   }
   else {
-    var gradient = context.createRadialGradient(x, y - 1, this.glowRad, x, y, this.rad - 4);
+    var gradient = context.createRadialGradient(x, y - 1, button.glowRad, x, y, button.rad - 4);
     gradient.addColorStop(0, 'red');
-    gradient.addColorStop(1, this.color);
+    gradient.addColorStop(1, button.color);
     context.fillStyle = gradient;
   }
 
   context.beginPath();
-  context.arc(x, y, this.rad - 3, 0, 2 * Math.PI, false);
+  context.arc(x, y, button.rad - 3, 0, 2 * Math.PI, false);
   context.closePath();
   context.fill();
 };
+
+startButtonPulse(powerButton);
