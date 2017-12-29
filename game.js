@@ -34,13 +34,16 @@ function handleKeyUp(event) {
 };
 function handleMouseDown(event) {
   if (event.buttons == 1) {
-    if (cursor.key) {
-      var keyName = pressCursorKey();
-      if (not(cursor.isHoldingKey)) {
-        handleTerminalInput({key: keyName});
+    for (var i = 0; i < keyboard.keyCount; i++) {
+      var key = keyboard.keys[i];
+      if (key.detectMouseOver(event)) {
+        cursor.key = key;
+        handleTerminalInput({key: pressCursorKey()});
+        break;
       }
     }
-    else if (isMouseOverButton(event, powerButton)) {
+
+    if (!cursor.key && isMouseOverButton(event, powerButton)) {
       powerButton.pressed = true;
     }
   }
@@ -48,13 +51,12 @@ function handleMouseDown(event) {
 function handleMouseMove(event) {
   setCursorPosition(event);
 
-  if (not(cursor.isHoldingKey)) {
+  if (cursor.isHoldingKey) {
     var cursorNotOverKey = true;
     var key;
-    for (var index = 0; index < keyboard.keys.length; index++) {
+    for (var index = 0; index < keyboard.keyCount; index++) {
       key = keyboard.keys[index];
       if (key.detectMouseOver(event)) {
-        window.crossGetKey(event);
         if (cursor.key != key) {
           if (event.buttons == 1) {
             releaseCursorKey();
@@ -86,7 +88,7 @@ function handleMouseMove(event) {
 };
 function handleMouseUp(event) {
   if (cursor.key && cursor.key.disabled) {
-    releaseCursorKey()
+    releaseCursorKey();
   }
   else if (powerButton.pressed && isMouseOverButton(event, powerButton)) {
     cycleButtonState(powerButton);
@@ -98,8 +100,9 @@ function handleMouseUp(event) {
     terminal.allowInput = powerButton.state === 'on';
   }
   else {
-    releaseCursorKey()
+    releaseCursorKey();
   }
+  cursor.key = null;
 };
 
 document.addEventListener('keydown', handleKeyDown);

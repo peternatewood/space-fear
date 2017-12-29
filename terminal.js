@@ -229,7 +229,7 @@ function processCommands() {
 
 function handleTerminalInput(e) {
   if (terminal.allowInput) {
-    var key = window.crossGetKey(e);
+    var key = crossGetKey(e);
     restartCursorBlink();
     // Only allow printable characters
     if (/^.$/.test(key) && terminal.cursor < TERMINAL_MESSAGE_CHARS) {

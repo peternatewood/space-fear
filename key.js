@@ -22,28 +22,35 @@ Key.prototype.destroy = function() {
 };
 Key.prototype.activate = function() {
   if (this.disabled === false) {
-    this.pressed = true;
+    if (this.key === 'CapsLock') {
+      this.pressed = legacyModKeys.capslock = !legacyModKeys.capslock;
+    }
+    else {
+      switch (this.key) {
+        case 'Alt'    : legacyModKeys.alt   = true; break;
+        case 'Control': legacyModKeys.ctrl  = true; break;
+        case 'Shift'  : legacyModKeys.shift = true; break;
+      }
+      this.pressed = true;
+    }
   }
 };
 Key.prototype.deactivate = function() {
-  this.pressed = false;
+  if (this.key !== 'CapsLock') {
+    switch (this.key) {
+      case 'Alt'    : legacyModKeys.alt   = true; break;
+      case 'Control': legacyModKeys.ctrl  = true; break;
+      case 'Shift'  : legacyModKeys.shift = true; break;
+    }
+    this.pressed = false;
+  }
 };
 Key.prototype.getKey = function(isKeyUp) {
-  if (not(this.disabled)) {
-    if (this.key == 'CapsLock' && isKeyUp) {
-      window.legacyModKeys.capslock = not(window.legacyModKeys.capslock);
-      this.pressed = window.legacyModKeys.capslock;
-    }
-    else if (this.key != 'CapsLock') {
-      this.pressed = not(isKeyUp);
-    }
-  }
-
   if (this.key.length == 1) {
-    return window.legacyModKeys.capslock ? this.key : this.key.toLowerCase();
+    return legacyModKeys.capslock ? this.key : this.key.toLowerCase();
   }
   else if (this.key.length == 2) {
-    return window.legacyModKeys.capslock ? this.key[0] : this.key[1];
+    return legacyModKeys.capslock ? this.key[0] : this.key[1];
   }
   else {
     return this.key;
@@ -51,16 +58,16 @@ Key.prototype.getKey = function(isKeyUp) {
 };
 Key.prototype.detectMouseOver = function(event, isKeyboard) {
   var prefix = isKeyboard ? 'keyboard' : '';
-  if (event.offsetX < this[prefix + 'x']) {
+  if (cursor.x < this[prefix + 'x']) {
     return false;
   }
-  else if (event.offsetX > (this[prefix + 'x'] + this.w)) {
+  else if (cursor.x > (this[prefix + 'x'] + this.w)) {
     return false;
   }
-  else if (event.offsetY < this[prefix + 'y']) {
+  else if (cursor.y < this[prefix + 'y']) {
     return false;
   }
-  else if (event.offsetY > (this[prefix + 'y'] + this.h)) {
+  else if (cursor.y > (this[prefix + 'y'] + this.h)) {
     return false;
   }
   return true;

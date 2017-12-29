@@ -1,6 +1,6 @@
 var powerButton = {
   x: canvas.width / 2 - MONITOR_WIDTH / 2 + MONITOR_WIDTH + 2 * POWER_BUTTON_SIZE,
-  y: MONITOR_TOP + MONITOR_HEIGHT - POWER_BUTTON_SIZE,
+  y: 24 + MONITOR_HEIGHT - POWER_BUTTON_SIZE,
   rad: POWER_BUTTON_SIZE,
   glowRad: 2,
   color: POWER_OFF_COLOR,
@@ -77,7 +77,7 @@ function renderButton(button) {
   context.closePath();
   context.fill();
 
-  if (not(button.pressed) && button.state !== 'on') {
+  if (!button.pressed && button.state !== 'on') {
     x++;
     y--;
   }
@@ -88,7 +88,7 @@ function renderButton(button) {
   context.closePath();
   context.fill();
 
-  if (not(button.pressed)) {
+  if (!button.pressed) {
     x += button.state == 'off' ? 2 : 1;
     y -= button.state == 'off' ? 2 : 1;
   }

@@ -1,6 +1,6 @@
 var monitor = {
   x: (canvas.width / 2) - (MONITOR_WIDTH / 2),
-  y: MONITOR_TOP,
+  y: 24,
   w: MONITOR_WIDTH,
   h: MONITOR_HEIGHT,
   booting: 'none',

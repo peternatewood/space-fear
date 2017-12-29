@@ -4,7 +4,6 @@ var Actor, Computer, Key, Room;
 const SCREEN_W = 1280;
 const SCREEN_H = 600;
 
-const MONITOR_TOP = 24;
 const MONITOR_MARGIN = 24;
 const MONITOR_PADDING = 12;
 const MONITOR_HEIGHT = 320;
@@ -48,12 +47,13 @@ const VALID_COMMANDS = {
   look: 'look [object]: Look at the current room, or a specific object in the room.',
   map: "map [floor number]: Display the map of current floor. Specify a floor to see its map instead. E.G. \"map 2\".",
   open: 'open [room name]: Open a door to an adjacent room.',
-}
+};
+
 var getCommand = function(input) {
   if (typeof input == 'undefined') {
     return 'invalid';
   }
-  switch(input.toLowerCase()) {
+  switch (input.toLowerCase()) {
     case 'clear':
       return 'clear';
     case 'close':
@@ -159,14 +159,6 @@ const KEYBOARD_KEYS = [
   { key: "right",     x: 905, y: 569, w:  36, h: 17 }
 ];
 
-var not = function(boolean) {
-  if (boolean === true || boolean === false) {
-    return ! boolean;
-  }
-  else {
-    throw new TypeError('function not() expects a boolean, got ' + typeof boolean);
-  }
-}
 var convertDecToHex = function(decimal) {
   var first = Math.floor(decimal / 16);
   if (first > 9) {
@@ -272,21 +264,23 @@ var convertKeyToIndex = function(key) {
 }
 // Provide support for browsers without the keydown event "key" property
 // "cross" is short for cross-browser
-window.legacyModKeys = {
+var legacyModKeys = {
   shift: false,
   alt: false,
   ctrl: false,
   capslock: false,
-}
-window.crossGetKey = function(event) {
+};
+
+function crossGetKey(event) {
   if (event.key) {
     return event.key;
   }
   else {
+    var useUpper = legacyModKeys.shift || legacyModKeys.capslock;
     // First handle all codes that correspond to ascii codes
     if (event.keyCode >= 48 && event.keyCode <= 57) {
       // Numerics
-      if (window.legacyModKeys.shift || window.legacyModKeys.capslock) {
+      if (useUpper) {
         switch(event.keyCode) {
           case 48: return ')';
           case 49: return '!';
@@ -304,31 +298,27 @@ window.crossGetKey = function(event) {
     }
     else if (event.keyCode >= 65 && event.keyCode <= 90) {
       // Alphas
-      return String.fromCharCode(event.keyCode + (window.legacyModKeys.shift || window.legacyModKeys.capslock ? 0 : 32));
+      return String.fromCharCode(event.keyCode + (useUpper ? 0 : 32));
     }
     // Now handle all the rest
     switch(event.keyCode) {
       // Printable keys
-      case 186: case  59: return window.legacyModKeys.shift || window.legacyModKeys.capslock ? ':' : ';';
-      case 187: case  61: return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '+' : '=';
-      case 188          : return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '<' : ',';
-      case 189: case 173: return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '_' : '-';
-      case 190          : return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '>' : '.';
-      case 191          : return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '?' : '/';
-      case 192          : return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '~' : '`';
-      case 219          : return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '{' : '[';
-      case 220          : return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '|' : '\\';
-      case 221          : return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '}' : ']';
-      case 222          : return window.legacyModKeys.shift || window.legacyModKeys.capslock ? '"' : '\'';
+      case 186: case  59: return useUpper ? ':' : ';';
+      case 187: case  61: return useUpper ? '+' : '=';
+      case 188          : return useUpper ? '<' : ',';
+      case 189: case 173: return useUpper ? '_' : '-';
+      case 190          : return useUpper ? '>' : '.';
+      case 191          : return useUpper ? '?' : '/';
+      case 192          : return useUpper ? '~' : '`';
+      case 219          : return useUpper ? '{' : '[';
+      case 220          : return useUpper ? '|' : '\\';
+      case 221          : return useUpper ? '}' : ']';
+      case 222          : return useUpper ? '"' : '\'';
       // Modifiers
-      case 16: window.legacyModKeys.shift = event.type == 'keydown'; return 'Shift';
-      case 17: window.legacyModKeys.ctrl  = event.type == 'keydown'; return 'Control';
-      case 18: window.legacyModKeys.alt   = event.type == 'keydown'; return 'Alt';
-      case 20:
-        if (event.type == 'keydown') {
-          window.legacyModKeys.capslock = not(window.legacyModKeys.capslock);
-        }
-        return 'CapsLock';
+      case 16: return 'Shift';
+      case 17: return 'Control';
+      case 18: return 'Alt';
+      case 20: return 'CapsLock';
       // Non-printable
       case  8: return 'Backspace';
       case  9: return 'Tab';

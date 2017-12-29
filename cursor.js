@@ -25,7 +25,7 @@ function toggleCursorHover(hoverOn) {
 
 function pressCursorKey() {
   if (cursor.key) {
-    if (cursor.key.disabled && not(cursor.isHoldingKey)) {
+    if (cursor.key.disabled && cursor.isHoldingKey) {
       cursor.key.grab(cursor);
       cursor.isHoldingKey = true;
     }
